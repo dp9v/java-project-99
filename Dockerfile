@@ -20,4 +20,4 @@ COPY /app .
 
 RUN gradle installDist
 
-CMD ./build/install/app/bin/app --args='--spring.profiles.active=prod'
+CMD ./build/install/app/bin/app

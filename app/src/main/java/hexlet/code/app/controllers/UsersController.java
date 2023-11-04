@@ -12,7 +12,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(UsersController.PATH)
-public class UsersController {
+public final class UsersController {
     public static final String PATH = "/users";
 
     private final UserRepository userRepository;

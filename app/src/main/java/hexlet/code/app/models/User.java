@@ -5,9 +5,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.ToString;
+import lombok.experimental.Accessors;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -18,7 +21,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Data
 @Entity
 @Table(name = "users")
-@ToString(exclude = "password")
+@Accessors(chain = true)
 public class User {
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -28,10 +31,11 @@ public class User {
 
     private String lastName;
 
-    @Email
     @Column(unique = true)
+    @NotBlank
     private String email;
 
+    @Size(min = 3)
     private String password;
 
     @LastModifiedDate

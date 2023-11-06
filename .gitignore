@@ -39,5 +39,7 @@ out/
 *.db
 
 node
-frontend/node_modules/
-frontend/build/
+node_modules/
+build/
+package-lock.json
+package.json

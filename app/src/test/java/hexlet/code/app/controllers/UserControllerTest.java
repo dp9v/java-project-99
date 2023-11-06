@@ -1,7 +1,6 @@
-package hexlet.code.app;
+package hexlet.code.app.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hexlet.code.app.controllers.UsersController;
 import hexlet.code.app.dtos.UserTO;
 import hexlet.code.app.models.User;
 import hexlet.code.app.repositories.UserRepository;
@@ -20,6 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -60,6 +60,7 @@ public final class UserControllerTest {
             .create();
         mockMvc.perform(
             post(UsersController.PATH)
+                .with(jwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(om.writeValueAsString(userToCreate))
         ).andExpect(status().isCreated());
@@ -75,6 +76,7 @@ public final class UserControllerTest {
 
         mockMvc.perform(
             put(UsersController.PATH + "/" + testUser.getId())
+                .with(jwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(om.writeValueAsString(userForUpdate))
         ).andExpect(status().isOk());
@@ -89,7 +91,10 @@ public final class UserControllerTest {
     @SneakyThrows
     @Test
     public void testGet() {
-        var response = mockMvc.perform(get(UsersController.PATH + "/" + testUser.getId()))
+        var response = mockMvc.perform(
+                get(UsersController.PATH + "/" + testUser.getId())
+                    .with(jwt())
+            )
             .andExpect(status().isOk())
             .andReturn()
             .getResponse()
@@ -112,7 +117,7 @@ public final class UserControllerTest {
             .toList();
         userRepository.saveAll(usersToCreate);
 
-        var response = mockMvc.perform(get(UsersController.PATH))
+        var response = mockMvc.perform(get(UsersController.PATH).with(jwt()))
             .andExpect(status().isOk())
             .andReturn()
             .getResponse()
@@ -126,7 +131,7 @@ public final class UserControllerTest {
     @Test
     @SneakyThrows
     public void testDelete() {
-        mockMvc.perform(delete(UsersController.PATH + "/" + testUser.getId()))
+        mockMvc.perform(delete(UsersController.PATH + "/" + testUser.getId()).with(jwt()))
             .andExpect(status().isOk());
 
         assertThat(userRepository.count()).isZero();

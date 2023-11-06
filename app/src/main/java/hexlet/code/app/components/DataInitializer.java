@@ -6,7 +6,6 @@ import hexlet.code.app.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -20,7 +19,7 @@ public class DataInitializer implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
-        if(userRepository.findByEmail(DEFAULT_LOGIN).isPresent()) {
+        if (userRepository.findByEmail(DEFAULT_LOGIN).isPresent()) {
             return;
         }
 

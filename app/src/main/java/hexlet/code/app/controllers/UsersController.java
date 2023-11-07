@@ -4,6 +4,7 @@ import hexlet.code.app.dtos.UserTO;
 import hexlet.code.app.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,16 +21,19 @@ import java.util.List;
 @RestController
 @RequestMapping(UsersController.PATH)
 public final class UsersController {
-    public static final String PATH = "/users";
+    public static final String PATH = "/api/users";
 
     private final UserService userService;
 
     @GetMapping
-    public List<UserTO> getAll() {
-        return userService.getAll()
+    public ResponseEntity<List<UserTO>> getAll() {
+        var users = userService.getAll()
             .stream()
             .map(UserTO::new)
             .toList();
+        return ResponseEntity.ok()
+            .header("X-Total-Count", String.valueOf(users.size()))
+            .body(users);
     }
 
     @GetMapping("/{id}")

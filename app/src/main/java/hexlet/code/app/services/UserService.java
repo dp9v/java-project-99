@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
@@ -33,7 +34,8 @@ public final class UserService implements UserDetailsManager {
     }
 
     public User create(UserTO user) {
-        var userToCreate = merge(new User(), user);
+        var userToCreate = merge(new User(), user)
+            .setCreatedAt(LocalDate.now());
 
         return userRepository.save(userToCreate);
     }
@@ -58,7 +60,7 @@ public final class UserService implements UserDetailsManager {
             user.setPassword(passwordEncoder.encode(userTO.password()));
         }
 
-        return user;
+        return user.setUpdatedAt(LocalDate.now());
     }
 
     @Override

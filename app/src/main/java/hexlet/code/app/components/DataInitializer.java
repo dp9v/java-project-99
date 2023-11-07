@@ -8,6 +8,8 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+
 @Component
 @RequiredArgsConstructor
 public class DataInitializer implements ApplicationRunner {
@@ -25,7 +27,9 @@ public class DataInitializer implements ApplicationRunner {
 
         var userToCreate = new User()
             .setEmail(DEFAULT_LOGIN)
-            .setPassword(DEFAULT_PASSWORD);
+            .setPassword(DEFAULT_PASSWORD)
+            .setCreatedAt(LocalDate.now())
+            .setUpdatedAt(LocalDate.now());
         userService.createUser(userToCreate);
     }
 }

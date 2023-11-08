@@ -1,7 +1,9 @@
 package hexlet.code.app.utils;
 
 import hexlet.code.app.dtos.TaskStatusTO;
+import hexlet.code.app.dtos.TaskTO;
 import hexlet.code.app.dtos.UserTO;
+import hexlet.code.app.models.Task;
 import hexlet.code.app.models.TaskStatus;
 import hexlet.code.app.models.User;
 import jakarta.annotation.PostConstruct;
@@ -17,8 +19,12 @@ import org.springframework.stereotype.Component;
 public class ModelGenerator {
     private Model<User> userModel;
     private Model<UserTO> userTOModel;
+
     private Model<TaskStatus> taskStatusModel;
     private Model<TaskStatusTO> taskStatusTOModel;
+
+    private Model<Task> taskModel;
+    private Model<TaskTO> taskTOModel;
 
     @PostConstruct
     private void init() {
@@ -42,16 +48,28 @@ public class ModelGenerator {
             .toModel();
 
         taskStatusModel = Instancio.of(TaskStatus.class)
-                .ignore(Select.field(TaskStatus::getId))
-                .supply(Select.field(TaskStatus::getName), () -> faker.animal().name())
-                .supply(Select.field(TaskStatus::getSlug), () -> faker.internet().slug())
-                .toModel();
+            .ignore(Select.field(TaskStatus::getId))
+            .supply(Select.field(TaskStatus::getName), () -> faker.animal().name())
+            .supply(Select.field(TaskStatus::getSlug), () -> faker.internet().slug())
+            .toModel();
 
         taskStatusTOModel = Instancio.of(TaskStatusTO.class)
-                .ignore(Select.field(TaskStatusTO::id))
-                .ignore(Select.field(TaskStatusTO::createdAt))
-                .supply(Select.field(TaskStatusTO::name), () -> faker.animal().name())
-                .supply(Select.field(TaskStatusTO::slug), () -> faker.internet().slug())
-                .toModel();
+            .ignore(Select.field(TaskStatusTO::id))
+            .ignore(Select.field(TaskStatusTO::createdAt))
+            .supply(Select.field(TaskStatusTO::name), () -> faker.animal().name())
+            .supply(Select.field(TaskStatusTO::slug), () -> faker.internet().slug())
+            .toModel();
+
+        taskModel = Instancio.of(Task.class)
+            .ignore(Select.field(Task::getId))
+            .supply(Select.field(Task::getName), () -> faker.videoGame().title())
+            .supply(Select.field(Task::getDescription), () -> faker.videoGame().platform())
+            .toModel();
+
+        taskTOModel = Instancio.of(TaskTO.class)
+            .ignore(Select.field(TaskTO::id))
+            .supply(Select.field(TaskTO::name), () -> faker.videoGame().title())
+            .supply(Select.field(TaskTO::content), () -> faker.videoGame().platform())
+            .toModel();
     }
 }

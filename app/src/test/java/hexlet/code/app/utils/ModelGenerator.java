@@ -68,7 +68,7 @@ public class ModelGenerator {
 
         taskTOModel = Instancio.of(TaskTO.class)
             .ignore(Select.field(TaskTO::id))
-            .supply(Select.field(TaskTO::name), () -> faker.videoGame().title())
+            .supply(Select.field(TaskTO::title), () -> faker.videoGame().title())
             .supply(Select.field(TaskTO::content), () -> faker.videoGame().platform())
             .toModel();
     }

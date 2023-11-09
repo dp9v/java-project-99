@@ -8,6 +8,8 @@ import hexlet.code.app.repositories.TaskStatusRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import static io.micrometer.common.util.StringUtils.isNotBlank;
 
 @Service
@@ -15,6 +17,18 @@ import static io.micrometer.common.util.StringUtils.isNotBlank;
 public class TaskService {
     private final TaskRepository taskRepository;
     private final TaskStatusRepository taskStatusRepository;
+
+    public Task getById(Long id) {
+        return taskRepository.findById(id).orElseThrow();
+    }
+
+    public List<Task> getAll() {
+        return taskRepository.findAll();
+    }
+
+    public void deleteById(Long id) {
+        taskRepository.deleteById(id);
+    }
 
     public Task create(TaskTO taskTO) {
         var taskToCreate = merge(new Task(), taskTO);
@@ -33,8 +47,8 @@ public class TaskService {
             var status = taskStatusRepository.findByName(source.status()).orElseThrow();
             target.setTaskStatus(status);
         }
-        if (isNotBlank(source.name())) {
-            target.setName(source.name());
+        if (isNotBlank(source.title())) {
+            target.setName(source.title());
         }
         if (isNotBlank(source.content())) {
             target.setDescription(source.content());

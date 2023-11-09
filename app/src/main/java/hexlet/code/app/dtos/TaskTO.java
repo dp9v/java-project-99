@@ -7,7 +7,7 @@ import java.time.LocalDate;
 
 public record TaskTO(
     Long id,
-    String name,
+    String title,
     String content,
     @JsonAlias("assignee_id")
     Long assigneeId,

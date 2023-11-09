@@ -59,7 +59,7 @@ public final class TaskStatusControllerTest {
         var statuses = taskStatusRepository.findAll();
         assertThat(statuses).hasSize(1);
         assertThat(statuses.get(0))
-                .matches(s -> s.getName().equals(statusToCreate.name()), "taskStatus.name")
+                .matches(s -> s.getName().equals(statusToCreate.name()), "taskStatus.title")
                 .matches(s -> s.getSlug().equals(statusToCreate.slug()), "taskStatus.slug")
                 .matches(s -> s.getCreatedAt().equals(LocalDate.now()), "taskStatus.createdAt");
     }
@@ -81,7 +81,7 @@ public final class TaskStatusControllerTest {
 
         var updatedStatus = taskStatusRepository.findById(createdStatus.getId()).orElseThrow();
         assertThat(updatedStatus)
-                .matches(s -> s.getName().equals(statusForUpdate.name()), "taskStatus.name")
+                .matches(s -> s.getName().equals(statusForUpdate.name()), "taskStatus.title")
                 .matches(s -> s.getSlug().equals(statusForUpdate.slug()), "taskStatus.slug");
     }
 
@@ -101,7 +101,7 @@ public final class TaskStatusControllerTest {
 
         var status = om.readValue(response, TaskStatusTO.class);
         assertThat(status)
-                .matches(s -> s.name().equals(createdStatus.getName()), "taskStatus.name")
+                .matches(s -> s.name().equals(createdStatus.getName()), "taskStatus.title")
                 .matches(s -> s.slug().equals(createdStatus.getSlug()), "taskStatus.slug");
     }
 
@@ -130,7 +130,7 @@ public final class TaskStatusControllerTest {
     public void testDelete() {
         var createdStatus = createStatus();
         mockMvc.perform(delete(TaskStatusController.PATH + "/" + createdStatus.getId()).with(jwt()))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
 
         assertThat(taskStatusRepository.count()).isZero();
     }

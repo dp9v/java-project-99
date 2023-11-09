@@ -132,7 +132,7 @@ public final class UserControllerTest {
     @SneakyThrows
     public void testDelete() {
         mockMvc.perform(delete(UsersController.PATH + "/" + testUser.getId()).with(jwt()))
-            .andExpect(status().isOk());
+            .andExpect(status().isNoContent());
 
         assertThat(userRepository.count()).isZero();
     }

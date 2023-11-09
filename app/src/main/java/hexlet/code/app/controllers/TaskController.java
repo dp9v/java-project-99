@@ -4,6 +4,9 @@ import hexlet.code.app.dtos.TaskTO;
 import hexlet.code.app.services.TaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -12,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(TaskController.PATH)
@@ -19,6 +24,30 @@ public class TaskController {
     public static final String PATH = "/api/tasks";
 
     private final TaskService taskService;
+
+    @GetMapping
+    public ResponseEntity<List<TaskTO>> getAll() {
+        var result = taskService.getAll()
+            .stream()
+            .map(TaskTO::new)
+            .toList();
+        return ResponseEntity.ok()
+            .header("X-Total-Count", String.valueOf(result.size()))
+            .body(result);
+    }
+
+    @GetMapping("/{id}")
+    public TaskTO getById(@PathVariable Long id) {
+        return new TaskTO(
+            taskService.getById(id)
+        );
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteById(@PathVariable Long id) {
+        taskService.deleteById(id);
+    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

@@ -6,7 +6,7 @@ import hexlet.code.app.models.Label;
 import hexlet.code.app.models.Task;
 import hexlet.code.app.models.TaskStatus;
 import hexlet.code.app.models.User;
-import hexlet.code.app.repositories.LabelRepository;
+import hexlet.code.app.repositories.LabelsRepository;
 import hexlet.code.app.repositories.TaskRepository;
 import hexlet.code.app.repositories.TaskStatusRepository;
 import hexlet.code.app.repositories.UserRepository;
@@ -54,7 +54,7 @@ public class TaskControllerTest {
     private UserRepository userRepository;
 
     @Autowired
-    private LabelRepository labelRepository;
+    private LabelsRepository labelsRepository;
 
     @Autowired
     private ModelGenerator modelGenerator;
@@ -71,7 +71,7 @@ public class TaskControllerTest {
         testUser = userRepository.save(
             Instancio.of(modelGenerator.getUserModel()).create()
         );
-        testLabel = labelRepository.save(
+        testLabel = labelsRepository.save(
             Instancio.of(modelGenerator.getLabelModel()).create()
         );
     }
@@ -80,7 +80,7 @@ public class TaskControllerTest {
     public void clear() {
         taskRepository.deleteAll();
         taskStatusRepository.deleteAll();
-        labelRepository.deleteAll();
+        labelsRepository.deleteAll();
     }
 
     @SneakyThrows
@@ -105,7 +105,7 @@ public class TaskControllerTest {
             .matches(t -> t.getDescription().equals(createdTask.content()), "task.description")
             .matches(t -> t.getTaskStatus().equals(testStatus), "task.status")
             .matches(t -> t.getAssignee().equals(testUser), "task.assignee")
-            .matches(t->t.getLabels().equals(Set.of(testLabel)), "task.labels");
+            .matches(t -> t.getLabels().equals(Set.of(testLabel)), "task.labels");
     }
 
     @Test
@@ -130,7 +130,7 @@ public class TaskControllerTest {
             .matches(t -> t.getDescription().equals(taskForUpdate.content()), "task.description")
             .matches(t -> t.getTaskStatus().equals(testStatus), "task.status")
             .matches(t -> t.getAssignee().equals(testUser), "task.assignee")
-            .matches(t->t.getLabels().isEmpty(), "task.labels");
+            .matches(t -> t.getLabels().isEmpty(), "task.labels");
     }
 
 

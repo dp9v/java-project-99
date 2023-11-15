@@ -49,9 +49,9 @@ public class TaskService {
             var status = taskStatusRepository.findByName(source.status()).orElseThrow();
             target.setTaskStatus(status);
         }
-        if(source.taskLabelIds() != null) {
+        if (source.taskLabelIds() != null) {
             var labels = source.taskLabelIds().stream()
-                .map(id->new Label().setId(id))
+                .map(id -> new Label().setId(id))
                 .collect(Collectors.toSet());
             target.setLabels(labels);
         }

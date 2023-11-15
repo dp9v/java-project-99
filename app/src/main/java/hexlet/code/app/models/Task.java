@@ -2,6 +2,7 @@ package hexlet.code.app.models;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Id;
@@ -10,9 +11,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 import static jakarta.persistence.GenerationType.AUTO;
 
@@ -42,4 +46,8 @@ public class Task {
     private LocalDate createdAt;
 
     private Long index;
+
+    @ManyToMany
+    @Fetch(FetchMode.JOIN)
+    private Set<Label> labels;
 }

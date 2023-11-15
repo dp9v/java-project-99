@@ -2,9 +2,11 @@ package hexlet.code.app.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.app.dtos.TaskTO;
+import hexlet.code.app.models.Label;
 import hexlet.code.app.models.Task;
 import hexlet.code.app.models.TaskStatus;
 import hexlet.code.app.models.User;
+import hexlet.code.app.repositories.LabelRepository;
 import hexlet.code.app.repositories.TaskRepository;
 import hexlet.code.app.repositories.TaskStatusRepository;
 import hexlet.code.app.repositories.UserRepository;
@@ -22,6 +24,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
@@ -51,8 +54,12 @@ public class TaskControllerTest {
     private UserRepository userRepository;
 
     @Autowired
+    private LabelRepository labelRepository;
+
+    @Autowired
     private ModelGenerator modelGenerator;
 
+    private Label testLabel;
     private TaskStatus testStatus;
     private User testUser;
 
@@ -64,13 +71,16 @@ public class TaskControllerTest {
         testUser = userRepository.save(
             Instancio.of(modelGenerator.getUserModel()).create()
         );
-
+        testLabel = labelRepository.save(
+            Instancio.of(modelGenerator.getLabelModel()).create()
+        );
     }
 
     @AfterEach
     public void clear() {
         taskRepository.deleteAll();
         taskStatusRepository.deleteAll();
+        labelRepository.deleteAll();
     }
 
     @SneakyThrows
@@ -79,6 +89,7 @@ public class TaskControllerTest {
         var createdTask = Instancio.of(modelGenerator.getTaskTOModel())
             .set(Select.field(TaskTO::status), testStatus.getName())
             .set(Select.field(TaskTO::assigneeId), testUser.getId())
+            .set(Select.field(TaskTO::taskLabelIds), Set.of(testLabel.getId()))
             .create();
 
         mockMvc.perform(post(TaskController.PATH)
@@ -93,7 +104,8 @@ public class TaskControllerTest {
             .matches(t -> t.getName().equals(createdTask.title()), "task.title")
             .matches(t -> t.getDescription().equals(createdTask.content()), "task.description")
             .matches(t -> t.getTaskStatus().equals(testStatus), "task.status")
-            .matches(t -> t.getAssignee().equals(testUser), "task.assignee");
+            .matches(t -> t.getAssignee().equals(testUser), "task.assignee")
+            .matches(t->t.getLabels().equals(Set.of(testLabel)), "task.labels");
     }
 
     @Test
@@ -104,6 +116,7 @@ public class TaskControllerTest {
         var taskForUpdate = Instancio.of(modelGenerator.getTaskTOModel())
             .set(Select.field(TaskTO::status), null)
             .set(Select.field(TaskTO::assigneeId), testUser.getId())
+            .set(Select.field(TaskTO::taskLabelIds), Set.of())
             .create();
         mockMvc.perform(put(TaskController.PATH + "/" + createdTask.getId())
             .contentType(MediaType.APPLICATION_JSON)
@@ -116,7 +129,8 @@ public class TaskControllerTest {
             .matches(t -> t.getName().equals(taskForUpdate.title()), "task.title")
             .matches(t -> t.getDescription().equals(taskForUpdate.content()), "task.description")
             .matches(t -> t.getTaskStatus().equals(testStatus), "task.status")
-            .matches(t -> t.getAssignee().equals(testUser), "task.assignee");
+            .matches(t -> t.getAssignee().equals(testUser), "task.assignee")
+            .matches(t->t.getLabels().isEmpty(), "task.labels");
     }
 
 
@@ -152,7 +166,8 @@ public class TaskControllerTest {
             .matches(t -> t.title().equals(createdTask.getName()), "task.title")
             .matches(t -> t.content().equals(createdTask.getDescription()), "task.description")
             .matches(t -> t.status().equals(testStatus.getName()), "task.status")
-            .matches(t -> t.assigneeId().equals(testUser.getId()), "task.assignee");
+            .matches(t -> t.assigneeId().equals(testUser.getId()), "task.assignee")
+            .matches(t -> t.taskLabelIds().equals(Set.of(testLabel.getId())), "task.labels");
     }
 
     @SneakyThrows
@@ -170,6 +185,7 @@ public class TaskControllerTest {
         var taskToCreate = Instancio.of(modelGenerator.getTaskModel())
             .set(Select.field(Task::getTaskStatus), testStatus)
             .set(Select.field(Task::getAssignee), testUser)
+            .set(Select.field(Task::getLabels), Set.of(testLabel))
             .create();
         return taskRepository.save(taskToCreate);
     }

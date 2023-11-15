@@ -3,6 +3,7 @@ package hexlet.code.app.utils;
 import hexlet.code.app.dtos.TaskStatusTO;
 import hexlet.code.app.dtos.TaskTO;
 import hexlet.code.app.dtos.UserTO;
+import hexlet.code.app.models.Label;
 import hexlet.code.app.models.Task;
 import hexlet.code.app.models.TaskStatus;
 import hexlet.code.app.models.User;
@@ -25,6 +26,8 @@ public class ModelGenerator {
 
     private Model<Task> taskModel;
     private Model<TaskTO> taskTOModel;
+
+    private Model<Label> labelModel;
 
     @PostConstruct
     private void init() {
@@ -70,6 +73,11 @@ public class ModelGenerator {
             .ignore(Select.field(TaskTO::id))
             .supply(Select.field(TaskTO::title), () -> faker.videoGame().title())
             .supply(Select.field(TaskTO::content), () -> faker.videoGame().platform())
+            .toModel();
+
+        labelModel = Instancio.of(Label.class)
+            .ignore(Select.field(Label::getId))
+            .supply(Select.field(Label::getName), () -> faker.animal().name())
             .toModel();
     }
 }

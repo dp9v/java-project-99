@@ -1,6 +1,7 @@
 package hexlet.code.app.services;
 
 import hexlet.code.app.dtos.TaskTO;
+import hexlet.code.app.models.Label;
 import hexlet.code.app.models.Task;
 import hexlet.code.app.models.User;
 import hexlet.code.app.repositories.TaskRepository;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static io.micrometer.common.util.StringUtils.isNotBlank;
 
@@ -46,6 +48,12 @@ public class TaskService {
         if (isNotBlank(source.status())) {
             var status = taskStatusRepository.findByName(source.status()).orElseThrow();
             target.setTaskStatus(status);
+        }
+        if(source.taskLabelIds() != null) {
+            var labels = source.taskLabelIds().stream()
+                .map(id->new Label().setId(id))
+                .collect(Collectors.toSet());
+            target.setLabels(labels);
         }
         if (isNotBlank(source.title())) {
             target.setName(source.title());

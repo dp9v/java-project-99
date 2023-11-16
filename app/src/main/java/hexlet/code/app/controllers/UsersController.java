@@ -2,6 +2,7 @@ package hexlet.code.app.controllers;
 
 import hexlet.code.app.dtos.UserTO;
 import hexlet.code.app.services.UserService;
+import hexlet.code.app.utils.ResponseEntityBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,13 +28,7 @@ public final class UsersController {
 
     @GetMapping
     public ResponseEntity<List<UserTO>> getAll() {
-        var users = userService.getAll()
-            .stream()
-            .map(UserTO::new)
-            .toList();
-        return ResponseEntity.ok()
-            .header("X-Total-Count", String.valueOf(users.size()))
-            .body(users);
+        return ResponseEntityBuilder.build(userService.getAll(), UserTO::new);
     }
 
     @GetMapping("/{id}")

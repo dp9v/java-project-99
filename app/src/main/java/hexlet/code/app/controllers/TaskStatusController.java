@@ -2,6 +2,7 @@ package hexlet.code.app.controllers;
 
 import hexlet.code.app.dtos.TaskStatusTO;
 import hexlet.code.app.services.TaskStatusService;
+import hexlet.code.app.utils.ResponseEntityBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,13 +28,7 @@ public final class TaskStatusController {
 
     @GetMapping
     public ResponseEntity<List<TaskStatusTO>> getAll() {
-        var result = service.getAll()
-                .stream()
-                .map(TaskStatusTO::new)
-                .toList();
-        return ResponseEntity.ok()
-                .header("X-Total-Count", String.valueOf(result.size()))
-                .body(result);
+        return ResponseEntityBuilder.build(service.getAll(), TaskStatusTO::new);
     }
 
     @GetMapping("/{id}")

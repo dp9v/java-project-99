@@ -3,6 +3,7 @@ package hexlet.code.app.controllers;
 import hexlet.code.app.dtos.TaskFilterRequest;
 import hexlet.code.app.dtos.TaskTO;
 import hexlet.code.app.services.TaskService;
+import hexlet.code.app.utils.ResponseEntityBuilder;
 import hexlet.code.app.utils.TaskSpecificationBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -30,13 +31,10 @@ public class TaskController {
 
     @GetMapping
     public ResponseEntity<List<TaskTO>> getAll(TaskFilterRequest filter) {
-        var result = taskService.getAll(taskSpecificationBuilder.build(filter))
-                .stream()
-                .map(TaskTO::new)
-                .toList();
-        return ResponseEntity.ok()
-                .header("X-Total-Count", String.valueOf(result.size()))
-                .body(result);
+        return ResponseEntityBuilder.build(
+                taskService.getAll(taskSpecificationBuilder.build(filter)),
+                TaskTO::new
+        );
     }
 
     @GetMapping("/{id}")

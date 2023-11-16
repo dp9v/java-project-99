@@ -2,6 +2,7 @@ package hexlet.code.app.controllers;
 
 import hexlet.code.app.dtos.LabelTO;
 import hexlet.code.app.services.LabelsService;
+import hexlet.code.app.utils.ResponseEntityBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,13 +29,10 @@ public final class LabelsController {
 
     @GetMapping
     public ResponseEntity<List<LabelTO>> getAll() {
-        var result = labelsService.getAll()
-            .stream()
-            .map(LabelTO::new)
-            .toList();
-        return ResponseEntity.ok()
-                .header("X-Total-Count", String.valueOf(result.size()))
-                .body(result);
+        return ResponseEntityBuilder.build(
+                labelsService.getAll(),
+                LabelTO::new
+        );
     }
 
     @GetMapping("/{id}")

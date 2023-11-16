@@ -9,6 +9,7 @@ import hexlet.code.app.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
+@Profile("!test")
 @RequiredArgsConstructor
 public class DataInitializer implements ApplicationRunner {
     private static final String DEFAULT_LOGIN = "hexlet@example.com";

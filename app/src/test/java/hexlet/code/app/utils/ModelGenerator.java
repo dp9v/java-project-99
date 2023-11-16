@@ -79,12 +79,12 @@ public class ModelGenerator {
 
         labelModel = Instancio.of(Label.class)
             .ignore(Select.field(Label::getId))
-            .supply(Select.field(Label::getName), () -> faker.animal().name())
+            .supply(Select.field(Label::getName), () -> faker.beer().brand())
             .toModel();
 
         labelTOModel = Instancio.of(LabelTO.class)
             .ignore(Select.field(LabelTO::id))
-            .supply(Select.field(LabelTO::name), () -> faker.animal().name())
+            .supply(Select.field(LabelTO::name), () -> faker.beer().brand())
             .toModel();
     }
 }

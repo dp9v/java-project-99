@@ -79,6 +79,7 @@ public class TaskControllerTest {
     @AfterEach
     public void clear() {
         taskRepository.deleteAll();
+        userRepository.deleteAll();
         taskStatusRepository.deleteAll();
         labelsRepository.deleteAll();
     }

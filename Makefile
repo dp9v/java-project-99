@@ -1,7 +1,10 @@
 build:
-	make -C app build
+	./gradlew clean build
+
+test:
+	./gradlew test
 
 report:
-	make -C app report
+	./gradlew test jacocoTestReport
 
 .PHONY: build

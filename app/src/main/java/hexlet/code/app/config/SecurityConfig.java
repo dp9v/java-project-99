@@ -25,39 +25,42 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(
-        HttpSecurity http,
-        HandlerMappingIntrospector introspector,
-        JwtDecoder jwtDecoder
+            HttpSecurity http,
+            HandlerMappingIntrospector introspector,
+            JwtDecoder jwtDecoder
     )
-        throws Exception {
+            throws Exception {
         // TODO: remove after merge
         // https://github.com/spring-projects/spring-security/issues/13568#issuecomment-1645059215
         var mvcMatcherBuilder = new MvcRequestMatcher.Builder(introspector);
         return http
-            .csrf(AbstractHttpConfigurer::disable)
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers(mvcMatcherBuilder.pattern("/api/login")).permitAll()
-                .requestMatchers(mvcMatcherBuilder.pattern("/")).permitAll()
-                .requestMatchers(mvcMatcherBuilder.pattern("/index.html")).permitAll()
-                .requestMatchers(mvcMatcherBuilder.pattern("/assets/**")).permitAll()
-                .anyRequest().authenticated())
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .oauth2ResourceServer(rs -> rs.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder)))
-            .httpBasic(Customizer.withDefaults())
-            .build();
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(mvcMatcherBuilder.pattern("/api/login")).permitAll()
+                        .requestMatchers(mvcMatcherBuilder.pattern("/")).permitAll()
+                        .requestMatchers(mvcMatcherBuilder.pattern("/index.html")).permitAll()
+                        .requestMatchers(mvcMatcherBuilder.pattern("/assets/**")).permitAll()
+                        .requestMatchers(mvcMatcherBuilder.pattern("/v3/api-docs/**")).permitAll()
+                        .requestMatchers(mvcMatcherBuilder.pattern("/swagger-ui.html")).permitAll()
+                        .requestMatchers(mvcMatcherBuilder.pattern("/swagger-ui/**")).permitAll()
+                        .anyRequest().authenticated())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .oauth2ResourceServer(rs -> rs.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder)))
+                .httpBasic(Customizer.withDefaults())
+                .build();
     }
 
     @SneakyThrows
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) {
         return http.getSharedObject(AuthenticationManagerBuilder.class)
-            .build();
+                .build();
     }
 
     @Bean
     public AuthenticationProvider daoAuthProvider(
-        PasswordEncoder passwordEncoder,
-        UserDetailsService userService
+            PasswordEncoder passwordEncoder,
+            UserDetailsService userService
     ) {
         var provider = new DaoAuthenticationProvider(passwordEncoder);
         provider.setUserDetailsService(userService);

@@ -1,4 +1,4 @@
-package hexlet.code.app.config;
+package hexlet.code.app.components;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

@@ -6,7 +6,6 @@ import hexlet.code.app.models.User;
 import hexlet.code.app.repositories.LabelsRepository;
 import hexlet.code.app.repositories.TaskStatusRepository;
 import hexlet.code.app.repositories.UserRepository;
-import hexlet.code.app.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -23,7 +22,7 @@ public class DataInitializer implements ApplicationRunner {
     private static final String DEFAULT_LOGIN = "hexlet@example.com";
     private static final String DEFAULT_PASSWORD = "qwerty";
     private static final List<String> DEFAULT_STATUSES = List.of(
-        "draft", "to_review", "to_be_fixed", "to_publish", "published"
+            "draft", "to_review", "to_be_fixed", "to_publish", "published"
     );
     private static final List<String> DEFAULT_LABELS = List.of(
             "bug", "feature"
@@ -39,7 +38,7 @@ public class DataInitializer implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) {
         var createdUser = userRepository.findByEmail(DEFAULT_LOGIN)
-                .orElseGet(()->{
+                .orElseGet(() -> {
                     var userToCreate = new User()
                             .setEmail(DEFAULT_LOGIN)
                             .setPassword(passwordEncoder.encode(DEFAULT_PASSWORD))
@@ -49,17 +48,17 @@ public class DataInitializer implements ApplicationRunner {
                 });
 
         var createdStatuses = DEFAULT_STATUSES.stream()
-            .map(s -> taskStatusRepository.findByName(s)
+                .map(s -> taskStatusRepository.findByName(s)
                         .orElse(new TaskStatus()
                                 .setName(s)
                                 .setSlug(s)
                                 .setCreatedAt(LocalDate.now()))
-            )
-            .peek(taskStatusRepository::save)
-            .collect(Collectors.toSet());
+                )
+                .peek(taskStatusRepository::save)
+                .collect(Collectors.toSet());
 
         var createdLabels = DEFAULT_LABELS.stream()
-                .map(l-> labelsRepository.findByName(l)
+                .map(l -> labelsRepository.findByName(l)
                         .orElse(new Label()
                                 .setName(l)
                                 .setCreatedAt(LocalDate.now()))

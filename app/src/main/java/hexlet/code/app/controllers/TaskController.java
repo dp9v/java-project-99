@@ -1,7 +1,9 @@
 package hexlet.code.app.controllers;
 
+import hexlet.code.app.dtos.TaskFilterRequest;
 import hexlet.code.app.dtos.TaskTO;
 import hexlet.code.app.services.TaskService;
+import hexlet.code.app.utils.TaskSpecificationBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,22 +26,23 @@ public class TaskController {
     public static final String PATH = "/api/tasks";
 
     private final TaskService taskService;
+    private final TaskSpecificationBuilder taskSpecificationBuilder;
 
     @GetMapping
-    public ResponseEntity<List<TaskTO>> getAll() {
-        var result = taskService.getAll()
-            .stream()
-            .map(TaskTO::new)
-            .toList();
+    public ResponseEntity<List<TaskTO>> getAll(TaskFilterRequest filter) {
+        var result = taskService.getAll(taskSpecificationBuilder.build(filter))
+                .stream()
+                .map(TaskTO::new)
+                .toList();
         return ResponseEntity.ok()
-            .header("X-Total-Count", String.valueOf(result.size()))
-            .body(result);
+                .header("X-Total-Count", String.valueOf(result.size()))
+                .body(result);
     }
 
     @GetMapping("/{id}")
     public TaskTO getById(@PathVariable Long id) {
         return new TaskTO(
-            taskService.getById(id)
+                taskService.getById(id)
         );
     }
 
@@ -53,7 +56,7 @@ public class TaskController {
     @ResponseStatus(HttpStatus.CREATED)
     public TaskTO create(@RequestBody TaskTO taskStatus) {
         return new TaskTO(
-            taskService.create(taskStatus)
+                taskService.create(taskStatus)
         );
     }
 
@@ -61,7 +64,7 @@ public class TaskController {
     @ResponseStatus(HttpStatus.OK)
     public TaskTO update(@PathVariable Long id, @RequestBody TaskTO task) {
         return new TaskTO(
-            taskService.update(id, task)
+                taskService.update(id, task)
         );
     }
 }

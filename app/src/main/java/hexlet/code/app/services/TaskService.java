@@ -7,6 +7,7 @@ import hexlet.code.app.models.User;
 import hexlet.code.app.repositories.TaskRepository;
 import hexlet.code.app.repositories.TaskStatusRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,8 +25,8 @@ public class TaskService {
         return taskRepository.findById(id).orElseThrow();
     }
 
-    public List<Task> getAll() {
-        return taskRepository.findAll();
+    public List<Task> getAll(Specification<Task> specification) {
+        return taskRepository.findAll(specification);
     }
 
     public void deleteById(Long id) {

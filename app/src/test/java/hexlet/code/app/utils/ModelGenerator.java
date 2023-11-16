@@ -67,14 +67,14 @@ public class ModelGenerator {
 
         taskModel = Instancio.of(Task.class)
             .ignore(Select.field(Task::getId))
-            .supply(Select.field(Task::getName), () -> faker.videoGame().title())
-            .supply(Select.field(Task::getDescription), () -> faker.videoGame().platform())
+            .supply(Select.field(Task::getName), () -> faker.animal().name())
+            .supply(Select.field(Task::getDescription), () -> faker.animal().scientificName())
             .toModel();
 
         taskTOModel = Instancio.of(TaskTO.class)
             .ignore(Select.field(TaskTO::id))
-            .supply(Select.field(TaskTO::title), () -> faker.videoGame().title())
-            .supply(Select.field(TaskTO::content), () -> faker.videoGame().platform())
+            .supply(Select.field(TaskTO::title), () -> faker.animal().name())
+            .supply(Select.field(TaskTO::content), () -> faker.animal().scientificName())
             .toModel();
 
         labelModel = Instancio.of(Label.class)

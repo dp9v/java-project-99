@@ -105,7 +105,7 @@ public final class LabelsControllerTest {
     public void testGetAll() {
         var labelsToCreate = Instancio.of(modelGenerator.getLabelModel())
                 .stream()
-                .limit(5)
+                .limit(3)
                 .toList();
         labelsRepository.saveAll(labelsToCreate);
 
@@ -116,7 +116,7 @@ public final class LabelsControllerTest {
                 .getContentAsString();
 
         var labels = om.readValue(response, List.class);
-        assertThat(labels).hasSize(5);
+        assertThat(labels).hasSize(3);
     }
 
 

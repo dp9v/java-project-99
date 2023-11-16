@@ -56,9 +56,12 @@ jacocoTestReport {
     }
 }
 
-sentry {
-    includeSourceContext = true
-    org = "hexlet-dp9v"
-    projectName = "hexlet-dp9v-task-meneger"
-    authToken = System.getenv("SENTRY_AUTH_TOKEN")
+if (System.getenv("APP_ENV").equals("prod")) {
+    sentry {
+        includeSourceContext = true
+        org = "hexlet-dp9v"
+        projectName = "hexlet-dp9v-task-meneger"
+        authToken = System.getenv("SENTRY_AUTH_TOKEN")
+    }
 }
+

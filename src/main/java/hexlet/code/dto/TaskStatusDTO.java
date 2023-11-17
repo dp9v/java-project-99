@@ -10,11 +10,12 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TaskStatusDTO{
+public class TaskStatusDTO {
     private Long id;
     private String name;
     private String slug;
     private LocalDate createdAt;
+
     public TaskStatusDTO(TaskStatus source) {
         this(source.getId(), source.getName(), source.getSlug(), source.getCreatedAt());
     }

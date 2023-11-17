@@ -43,13 +43,13 @@ public class ModelGenerator {
             .toModel();
 
         userTOModel = Instancio.of(UserDTO.class)
-            .ignore(Select.field(UserDTO::createdAt))
-            .ignore(Select.field(UserDTO::updatedAt))
-            .ignore(Select.field(UserDTO::id))
-            .supply(Select.field(UserDTO::email), () -> faker.internet().emailAddress())
-            .supply(Select.field(UserDTO::firstName), () -> faker.name().firstName())
-            .supply(Select.field(UserDTO::lastName), () -> faker.name().lastName())
-            .supply(Select.field(UserDTO::password), () -> faker.internet().password())
+            .ignore(Select.field(UserDTO::getCreatedAt))
+            .ignore(Select.field(UserDTO::getUpdatedAt))
+            .ignore(Select.field(UserDTO::getId))
+            .supply(Select.field(UserDTO::getEmail), () -> faker.internet().emailAddress())
+            .supply(Select.field(UserDTO::getFirstName), () -> faker.name().firstName())
+            .supply(Select.field(UserDTO::getLastName), () -> faker.name().lastName())
+            .supply(Select.field(UserDTO::getPassword), () -> faker.internet().password())
             .toModel();
 
         taskStatusModel = Instancio.of(TaskStatus.class)
@@ -59,10 +59,10 @@ public class ModelGenerator {
             .toModel();
 
         taskStatusTOModel = Instancio.of(TaskStatusDTO.class)
-            .ignore(Select.field(TaskStatusDTO::id))
-            .ignore(Select.field(TaskStatusDTO::createdAt))
-            .supply(Select.field(TaskStatusDTO::name), () -> faker.animal().name())
-            .supply(Select.field(TaskStatusDTO::slug), () -> faker.internet().slug())
+            .ignore(Select.field(TaskStatusDTO::getId))
+            .ignore(Select.field(TaskStatusDTO::getCreatedAt))
+            .supply(Select.field(TaskStatusDTO::getName), () -> faker.animal().name())
+            .supply(Select.field(TaskStatusDTO::getSlug), () -> faker.internet().slug())
             .toModel();
 
         taskModel = Instancio.of(Task.class)
@@ -72,19 +72,19 @@ public class ModelGenerator {
             .toModel();
 
         taskTOModel = Instancio.of(TaskDTO.class)
-            .ignore(Select.field(TaskDTO::id))
-            .supply(Select.field(TaskDTO::title), () -> faker.animal().name())
-            .supply(Select.field(TaskDTO::content), () -> faker.animal().scientificName())
+            .ignore(Select.field(TaskDTO::getId))
+            .supply(Select.field(TaskDTO::getTitle), () -> faker.animal().name())
+            .supply(Select.field(TaskDTO::getContent), () -> faker.animal().scientificName())
             .toModel();
 
         labelModel = Instancio.of(Label.class)
             .ignore(Select.field(Label::getId))
-            .supply(Select.field(Label::getName), () -> faker.beer().brand())
+            .supply(Select.field(Label::getName), () -> faker.unique().fetchFromYaml("beer.brand"))
             .toModel();
 
         labelTOModel = Instancio.of(LabelDTO.class)
-            .ignore(Select.field(LabelDTO::id))
-            .supply(Select.field(LabelDTO::name), () -> faker.beer().brand())
+            .ignore(Select.field(LabelDTO::getId))
+            .supply(Select.field(LabelDTO::getName), () -> faker.unique().fetchFromYaml("beer.brand"))
             .toModel();
     }
 }

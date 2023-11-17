@@ -84,9 +84,9 @@ public final class UserControllerTest {
 
         var updatedUser = userRepository.findById(testUser.getId()).orElseThrow();
         assertThat(updatedUser)
-            .matches(u -> u.getEmail().equals(userForUpdate.email()), "user.email")
-            .matches(u -> u.getFirstName().equals(userForUpdate.firstName()), "user.firstName")
-            .matches(u -> u.getLastName().equals(userForUpdate.lastName()), "user.lastName");
+            .matches(u -> u.getEmail().equals(userForUpdate.getEmail()), "user.email")
+            .matches(u -> u.getFirstName().equals(userForUpdate.getFirstName()), "user.firstName")
+            .matches(u -> u.getLastName().equals(userForUpdate.getLastName()), "user.lastName");
     }
 
     @SneakyThrows
@@ -103,10 +103,10 @@ public final class UserControllerTest {
 
         var user = om.readValue(response, UserDTO.class);
         assertThat(user)
-            .matches(u -> u.email().equals(testUser.getEmail()), "user.email")
-            .matches(u -> u.firstName().equals(testUser.getFirstName()), "user.firstName")
-            .matches(u -> u.lastName().equals(testUser.getLastName()), "user.lastName")
-            .matches(u -> u.createdAt().equals(testUser.getCreatedAt()), "user.createdAt");
+            .matches(u -> u.getEmail().equals(testUser.getEmail()), "user.email")
+            .matches(u -> u.getFirstName().equals(testUser.getFirstName()), "user.firstName")
+            .matches(u -> u.getLastName().equals(testUser.getLastName()), "user.lastName")
+            .matches(u -> u.getCreatedAt().equals(testUser.getCreatedAt()), "user.createdAt");
     }
 
     @Test

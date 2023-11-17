@@ -26,14 +26,14 @@ public class LabelsService {
     public Label create(LabelDTO label) {
         return labelRepository.save(
             new Label()
-                .setName(label.name())
+                .setName(label.getName())
                 .setCreatedAt(LocalDate.now())
         );
     }
 
     public Label update(Long id, LabelDTO labelDTO) {
         var label = labelRepository.findById(id)
-            .map(l -> l.setName(labelDTO.name()))
+            .map(l -> l.setName(labelDTO.getName()))
             .orElseThrow();
         return labelRepository.save(label);
     }

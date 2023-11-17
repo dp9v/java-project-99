@@ -59,7 +59,7 @@ public final class LabelsControllerTest {
         var labels = labelRepository.findAll();
         assertThat(labels).hasSize(1);
         assertThat(labels.get(0))
-                .matches(s -> s.getName().equals(labelToCreate.name()), "label.name");
+                .matches(s -> s.getName().equals(labelToCreate.getName()), "label.name");
     }
 
     @Test
@@ -79,7 +79,7 @@ public final class LabelsControllerTest {
 
         var updatedLabel = labelRepository.findById(createdLabel.getId()).orElseThrow();
         assertThat(updatedLabel)
-            .matches(s -> s.getName().equals(labelForUpdate.name()), "label.name");
+            .matches(s -> s.getName().equals(labelForUpdate.getName()), "label.name");
     }
 
     @SneakyThrows
@@ -98,7 +98,7 @@ public final class LabelsControllerTest {
 
         var label = om.readValue(response, LabelDTO.class);
         assertThat(label)
-                .matches(s -> s.name().equals(createdLabel.getName()), "label.name");
+                .matches(s -> s.getName().equals(createdLabel.getName()), "label.name");
     }
 
     @Test
@@ -106,7 +106,7 @@ public final class LabelsControllerTest {
     public void testGetAll() {
         var labelsToCreate = Instancio.of(modelGenerator.getLabelModel())
                 .stream()
-                .limit(3)
+                .limit(10)
                 .toList();
         labelRepository.saveAll(labelsToCreate);
 
@@ -117,7 +117,7 @@ public final class LabelsControllerTest {
                 .getContentAsString();
 
         var labels = om.readValue(response, List.class);
-        assertThat(labels).hasSize(3);
+        assertThat(labels).hasSize(10);
     }
 
 

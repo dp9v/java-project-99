@@ -46,27 +46,27 @@ public class TaskService {
     }
 
     public Task merge(Task target, TaskDTO source) {
-        if (isNotBlank(source.status())) {
-            var status = taskStatusRepository.findByName(source.status()).orElseThrow();
+        if (isNotBlank(source.getStatus())) {
+            var status = taskStatusRepository.findByName(source.getStatus()).orElseThrow();
             target.setTaskStatus(status);
         }
-        if (source.taskLabelIds() != null) {
-            var labels = source.taskLabelIds().stream()
+        if (source.getTaskLabelIds() != null) {
+            var labels = source.getTaskLabelIds().stream()
                 .map(id -> new Label().setId(id))
                 .collect(Collectors.toSet());
             target.setLabels(labels);
         }
-        if (isNotBlank(source.title())) {
-            target.setName(source.title());
+        if (isNotBlank(source.getTitle())) {
+            target.setName(source.getTitle());
         }
-        if (isNotBlank(source.content())) {
-            target.setDescription(source.content());
+        if (isNotBlank(source.getContent())) {
+            target.setDescription(source.getContent());
         }
-        if (source.index() != null) {
-            target.setIndex(source.index());
+        if (source.getIndex() != null) {
+            target.setIndex(source.getIndex());
         }
-        if (source.assigneeId() != null) {
-            target.setAssignee(new User().setId(source.assigneeId()));
+        if (source.getAssigneeId() != null) {
+            target.setAssignee(new User().setId(source.getAssigneeId()));
         }
         return target;
     }

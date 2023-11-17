@@ -43,11 +43,11 @@ public class TaskStatusService {
     }
 
     private TaskStatus merge(TaskStatus target, TaskStatusDTO source) {
-        if (isNotBlank(source.name())) {
-            target.setName(source.name());
+        if (isNotBlank(source.getName())) {
+            target.setName(source.getName());
         }
-        if (isNotBlank(source.slug())) {
-            target.setSlug(source.slug());
+        if (isNotBlank(source.getSlug())) {
+            target.setSlug(source.getSlug());
         }
         return target;
     }

@@ -3,22 +3,28 @@ package hexlet.code.dto;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import hexlet.code.model.Label;
 import hexlet.code.model.Task;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public record TaskDTO(
-    Long id,
-    String title,
-    String content,
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class TaskDTO {
+    private Long id;
+    private String title;
+    private String content;
     @JsonAlias("assignee_id")
-    Long assigneeId,
-    String status,
-    Set<Long> taskLabelIds,
-    LocalDate createdAt,
-    Long index
-) {
+    private Long assigneeId;
+    private String status;
+    private Set<Long> taskLabelIds;
+    private LocalDate createdAt;
+    private Long index;
+
     public TaskDTO(Task task) {
         this(
             task.getId(),

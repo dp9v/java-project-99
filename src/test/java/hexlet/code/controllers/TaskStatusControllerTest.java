@@ -62,8 +62,8 @@ public final class TaskStatusControllerTest {
         var statuses = taskStatusRepository.findAll();
         AssertionsForInterfaceTypes.assertThat(statuses).hasSize(1);
         AssertionsForClassTypes.assertThat(statuses.get(0))
-                .matches(s -> s.getName().equals(statusToCreate.name()), "taskStatus.title")
-                .matches(s -> s.getSlug().equals(statusToCreate.slug()), "taskStatus.slug")
+                .matches(s -> s.getName().equals(statusToCreate.getName()), "taskStatus.title")
+                .matches(s -> s.getSlug().equals(statusToCreate.getSlug()), "taskStatus.slug")
                 .matches(s -> s.getCreatedAt().equals(LocalDate.now()), "taskStatus.createdAt");
     }
 
@@ -84,8 +84,8 @@ public final class TaskStatusControllerTest {
 
         var updatedStatus = taskStatusRepository.findById(createdStatus.getId()).orElseThrow();
         AssertionsForClassTypes.assertThat(updatedStatus)
-                .matches(s -> s.getName().equals(statusForUpdate.name()), "taskStatus.title")
-                .matches(s -> s.getSlug().equals(statusForUpdate.slug()), "taskStatus.slug");
+                .matches(s -> s.getName().equals(statusForUpdate.getName()), "taskStatus.title")
+                .matches(s -> s.getSlug().equals(statusForUpdate.getSlug()), "taskStatus.slug");
     }
 
     @SneakyThrows
@@ -104,8 +104,8 @@ public final class TaskStatusControllerTest {
 
         var status = om.readValue(response, TaskStatusDTO.class);
         assertThat(status)
-                .matches(s -> s.name().equals(createdStatus.getName()), "taskStatus.title")
-                .matches(s -> s.slug().equals(createdStatus.getSlug()), "taskStatus.slug");
+                .matches(s -> s.getName().equals(createdStatus.getName()), "taskStatus.title")
+                .matches(s -> s.getSlug().equals(createdStatus.getSlug()), "taskStatus.slug");
     }
 
     @Test

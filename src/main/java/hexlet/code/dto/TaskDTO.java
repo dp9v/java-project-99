@@ -16,11 +16,14 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class TaskDTO {
     private Long id;
-    private String title;
-    private String content;
+    @JsonAlias("title")
+    private String name;
+    @JsonAlias("content")
+    private String description;
     @JsonAlias("assignee_id")
     private Long assigneeId;
-    private String status;
+    @JsonAlias("status")
+    private String taskStatusSlug;
     private Set<Long> taskLabelIds;
     private LocalDate createdAt;
     private Long index;

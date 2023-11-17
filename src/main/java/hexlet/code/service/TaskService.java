@@ -46,8 +46,8 @@ public class TaskService {
     }
 
     public Task merge(Task target, TaskDTO source) {
-        if (isNotBlank(source.getStatus())) {
-            var status = taskStatusRepository.findByName(source.getStatus()).orElseThrow();
+        if (isNotBlank(source.getTaskStatusSlug())) {
+            var status = taskStatusRepository.findByName(source.getTaskStatusSlug()).orElseThrow();
             target.setTaskStatus(status);
         }
         if (source.getTaskLabelIds() != null) {
@@ -56,11 +56,11 @@ public class TaskService {
                 .collect(Collectors.toSet());
             target.setLabels(labels);
         }
-        if (isNotBlank(source.getTitle())) {
-            target.setName(source.getTitle());
+        if (isNotBlank(source.getName())) {
+            target.setName(source.getName());
         }
-        if (isNotBlank(source.getContent())) {
-            target.setDescription(source.getContent());
+        if (isNotBlank(source.getDescription())) {
+            target.setDescription(source.getDescription());
         }
         if (source.getIndex() != null) {
             target.setIndex(source.getIndex());

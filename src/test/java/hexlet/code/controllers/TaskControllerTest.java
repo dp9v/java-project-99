@@ -89,7 +89,7 @@ public class TaskControllerTest {
     @Test
     public void testCreate() {
         var createdTask = Instancio.of(modelGenerator.getTaskTOModel())
-            .set(Select.field(TaskDTO::getStatus), testStatus.getName())
+            .set(Select.field(TaskDTO::getTaskStatusSlug), testStatus.getName())
             .set(Select.field(TaskDTO::getAssigneeId), testUser.getId())
             .set(Select.field(TaskDTO::getTaskLabelIds), Set.of(testLabel.getId()))
             .create();
@@ -103,8 +103,8 @@ public class TaskControllerTest {
         var tasks = taskRepository.findAll();
         assertThat(tasks).hasSize(1);
         assertThat(tasks.get(0))
-            .matches(t -> t.getName().equals(createdTask.getTitle()), "task.title")
-            .matches(t -> t.getDescription().equals(createdTask.getContent()), "task.description")
+            .matches(t -> t.getName().equals(createdTask.getName()), "task.title")
+            .matches(t -> t.getDescription().equals(createdTask.getDescription()), "task.description")
             .matches(t -> t.getTaskStatus().equals(testStatus), "task.status")
             .matches(t -> t.getAssignee().equals(testUser), "task.assignee")
             .matches(t -> t.getLabels().equals(Set.of(testLabel)), "task.labels");
@@ -116,7 +116,7 @@ public class TaskControllerTest {
         var createdTask = createTask();
 
         var taskForUpdate = Instancio.of(modelGenerator.getTaskTOModel())
-            .set(Select.field(TaskDTO::getStatus), null)
+            .set(Select.field(TaskDTO::getTaskStatusSlug), null)
             .set(Select.field(TaskDTO::getAssigneeId), testUser.getId())
             .set(Select.field(TaskDTO::getTaskLabelIds), Set.of())
             .create();
@@ -128,8 +128,8 @@ public class TaskControllerTest {
 
         var task = taskRepository.findById(createdTask.getId()).orElseThrow();
         assertThat(task)
-            .matches(t -> t.getName().equals(taskForUpdate.getTitle()), "task.title")
-            .matches(t -> t.getDescription().equals(taskForUpdate.getContent()), "task.description")
+            .matches(t -> t.getName().equals(taskForUpdate.getName()), "task.title")
+            .matches(t -> t.getDescription().equals(taskForUpdate.getDescription()), "task.description")
             .matches(t -> t.getTaskStatus().equals(testStatus), "task.status")
             .matches(t -> t.getAssignee().equals(testUser), "task.assignee")
             .matches(t -> t.getLabels().isEmpty(), "task.labels");
@@ -165,9 +165,9 @@ public class TaskControllerTest {
             .getContentAsString();
         var task = om.readValue(response, TaskDTO.class);
         assertThat(task)
-            .matches(t -> t.getTitle().equals(createdTask.getName()), "task.title")
-            .matches(t -> t.getContent().equals(createdTask.getDescription()), "task.description")
-            .matches(t -> t.getStatus().equals(testStatus.getName()), "task.status")
+            .matches(t -> t.getName().equals(createdTask.getName()), "task.title")
+            .matches(t -> t.getDescription().equals(createdTask.getDescription()), "task.description")
+            .matches(t -> t.getTaskStatusSlug().equals(testStatus.getName()), "task.status")
             .matches(t -> t.getAssigneeId().equals(testUser.getId()), "task.assignee")
             .matches(t -> t.getTaskLabelIds().equals(Set.of(testLabel.getId())), "task.labels");
     }

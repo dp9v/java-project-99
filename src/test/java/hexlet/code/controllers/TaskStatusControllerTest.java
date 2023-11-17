@@ -1,9 +1,10 @@
 package hexlet.code.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hexlet.code.dtos.TaskStatusTO;
-import hexlet.code.models.TaskStatus;
-import hexlet.code.repositories.TaskStatusRepository;
+import hexlet.code.controller.TaskStatusController;
+import hexlet.code.dto.TaskStatusDTO;
+import hexlet.code.model.TaskStatus;
+import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.utils.ModelGenerator;
 import lombok.SneakyThrows;
 import org.assertj.core.api.AssertionsForClassTypes;
@@ -101,7 +102,7 @@ public final class TaskStatusControllerTest {
                 .getResponse()
                 .getContentAsString();
 
-        var status = om.readValue(response, TaskStatusTO.class);
+        var status = om.readValue(response, TaskStatusDTO.class);
         assertThat(status)
                 .matches(s -> s.name().equals(createdStatus.getName()), "taskStatus.title")
                 .matches(s -> s.slug().equals(createdStatus.getSlug()), "taskStatus.slug");

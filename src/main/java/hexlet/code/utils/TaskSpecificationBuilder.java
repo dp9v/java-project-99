@@ -1,7 +1,7 @@
 package hexlet.code.utils;
 
-import hexlet.code.dtos.TaskFilterRequest;
-import hexlet.code.models.Task;
+import hexlet.code.dto.TaskFilterRequest;
+import hexlet.code.model.Task;
 import jakarta.persistence.criteria.JoinType;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;

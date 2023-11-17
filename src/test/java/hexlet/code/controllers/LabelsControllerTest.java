@@ -1,9 +1,10 @@
 package hexlet.code.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hexlet.code.dtos.LabelTO;
-import hexlet.code.models.Label;
-import hexlet.code.repositories.LabelsRepository;
+import hexlet.code.controller.LabelsController;
+import hexlet.code.dto.LabelDTO;
+import hexlet.code.model.Label;
+import hexlet.code.repository.LabelsRepository;
 import hexlet.code.utils.ModelGenerator;
 import lombok.SneakyThrows;
 import org.instancio.Instancio;
@@ -95,7 +96,7 @@ public final class LabelsControllerTest {
                 .getResponse()
                 .getContentAsString();
 
-        var label = om.readValue(response, LabelTO.class);
+        var label = om.readValue(response, LabelDTO.class);
         assertThat(label)
                 .matches(s -> s.name().equals(createdLabel.getName()), "label.name");
     }

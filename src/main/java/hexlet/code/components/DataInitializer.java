@@ -1,11 +1,11 @@
 package hexlet.code.components;
 
-import hexlet.code.models.Label;
-import hexlet.code.models.TaskStatus;
-import hexlet.code.models.User;
-import hexlet.code.repositories.LabelsRepository;
-import hexlet.code.repositories.TaskStatusRepository;
-import hexlet.code.repositories.UserRepository;
+import hexlet.code.model.Label;
+import hexlet.code.model.TaskStatus;
+import hexlet.code.model.User;
+import hexlet.code.repository.LabelsRepository;
+import hexlet.code.repository.TaskStatusRepository;
+import hexlet.code.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;

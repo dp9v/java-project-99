@@ -1,9 +1,10 @@
 package hexlet.code.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hexlet.code.dtos.UserTO;
-import hexlet.code.models.User;
-import hexlet.code.repositories.UserRepository;
+import hexlet.code.controller.UsersController;
+import hexlet.code.dto.UserDTO;
+import hexlet.code.model.User;
+import hexlet.code.repository.UserRepository;
 import hexlet.code.utils.ModelGenerator;
 import lombok.SneakyThrows;
 import org.instancio.Instancio;
@@ -100,7 +101,7 @@ public final class UserControllerTest {
             .getResponse()
             .getContentAsString();
 
-        var user = om.readValue(response, UserTO.class);
+        var user = om.readValue(response, UserDTO.class);
         assertThat(user)
             .matches(u -> u.email().equals(testUser.getEmail()), "user.email")
             .matches(u -> u.firstName().equals(testUser.getFirstName()), "user.firstName")

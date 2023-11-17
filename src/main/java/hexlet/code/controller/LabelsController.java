@@ -1,7 +1,7 @@
-package hexlet.code.controllers;
+package hexlet.code.controller;
 
-import hexlet.code.dtos.LabelTO;
-import hexlet.code.services.LabelsService;
+import hexlet.code.dto.LabelDTO;
+import hexlet.code.service.LabelsService;
 import hexlet.code.utils.ResponseEntityBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -28,31 +28,31 @@ public final class LabelsController {
 
 
     @GetMapping
-    public ResponseEntity<List<LabelTO>> getAll() {
+    public ResponseEntity<List<LabelDTO>> getAll() {
         return ResponseEntityBuilder.build(
                 labelsService.getAll(),
-                LabelTO::new
+                LabelDTO::new
         );
     }
 
     @GetMapping("/{id}")
-    public LabelTO getById(@PathVariable Long id) {
-        return new LabelTO(
+    public LabelDTO getById(@PathVariable Long id) {
+        return new LabelDTO(
             labelsService.getById(id)
         );
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public LabelTO create(@RequestBody LabelTO label) {
-        return new LabelTO(
+    public LabelDTO create(@RequestBody LabelDTO label) {
+        return new LabelDTO(
             labelsService.create(label)
         );
     }
 
     @PutMapping("/{id}")
-    public LabelTO update(@PathVariable Long id, @RequestBody LabelTO label) {
-        return new LabelTO(
+    public LabelDTO update(@PathVariable Long id, @RequestBody LabelDTO label) {
+        return new LabelDTO(
             labelsService.update(id, label)
         );
     }

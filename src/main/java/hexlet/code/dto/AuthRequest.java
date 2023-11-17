@@ -1,4 +1,4 @@
-package hexlet.code.dtos;
+package hexlet.code.dto;
 
 public record AuthRequest(
     String username,

@@ -1,7 +1,7 @@
-package hexlet.code.controllers;
+package hexlet.code.controller;
 
-import hexlet.code.dtos.TaskStatusTO;
-import hexlet.code.services.TaskStatusService;
+import hexlet.code.dto.TaskStatusDTO;
+import hexlet.code.service.TaskStatusService;
 import hexlet.code.utils.ResponseEntityBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,13 +27,13 @@ public final class TaskStatusController {
     private final TaskStatusService service;
 
     @GetMapping
-    public ResponseEntity<List<TaskStatusTO>> getAll() {
-        return ResponseEntityBuilder.build(service.getAll(), TaskStatusTO::new);
+    public ResponseEntity<List<TaskStatusDTO>> getAll() {
+        return ResponseEntityBuilder.build(service.getAll(), TaskStatusDTO::new);
     }
 
     @GetMapping("/{id}")
-    public TaskStatusTO getById(@PathVariable Long id) {
-        return new TaskStatusTO(
+    public TaskStatusDTO getById(@PathVariable Long id) {
+        return new TaskStatusDTO(
                 service.getById(id)
         );
     }
@@ -46,15 +46,15 @@ public final class TaskStatusController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public TaskStatusTO create(@RequestBody TaskStatusTO taskStatus) {
-        return new TaskStatusTO(
+    public TaskStatusDTO create(@RequestBody TaskStatusDTO taskStatus) {
+        return new TaskStatusDTO(
                 service.create(taskStatus)
         );
     }
 
     @PutMapping("/{id}")
-    public TaskStatusTO update(@PathVariable Long id, @RequestBody TaskStatusTO taskStatus) {
-        return new TaskStatusTO(
+    public TaskStatusDTO update(@PathVariable Long id, @RequestBody TaskStatusDTO taskStatus) {
+        return new TaskStatusDTO(
                 service.update(id, taskStatus)
         );
     }

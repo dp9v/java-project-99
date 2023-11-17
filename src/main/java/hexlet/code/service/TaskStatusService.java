@@ -1,8 +1,8 @@
-package hexlet.code.services;
+package hexlet.code.service;
 
-import hexlet.code.dtos.TaskStatusTO;
-import hexlet.code.models.TaskStatus;
-import hexlet.code.repositories.TaskStatusRepository;
+import hexlet.code.dto.TaskStatusDTO;
+import hexlet.code.model.TaskStatus;
+import hexlet.code.repository.TaskStatusRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -29,20 +29,20 @@ public class TaskStatusService {
         repository.deleteById(id);
     }
 
-    public TaskStatus create(TaskStatusTO statusTO) {
+    public TaskStatus create(TaskStatusDTO statusTO) {
         var statusToCreate = merge(new TaskStatus(), statusTO)
                 .setCreatedAt(LocalDate.now());
         return repository.save(statusToCreate);
     }
 
-    public TaskStatus update(Long id, TaskStatusTO statusTO) {
+    public TaskStatus update(Long id, TaskStatusDTO statusTO) {
         var statusToCreate = repository.findById(id)
                 .map(s -> merge(s, statusTO))
                 .orElseThrow();
         return repository.save(statusToCreate);
     }
 
-    private TaskStatus merge(TaskStatus target, TaskStatusTO source) {
+    private TaskStatus merge(TaskStatus target, TaskStatusDTO source) {
         if (isNotBlank(source.name())) {
             target.setName(source.name());
         }

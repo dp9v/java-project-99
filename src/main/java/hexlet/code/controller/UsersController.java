@@ -1,7 +1,7 @@
-package hexlet.code.controllers;
+package hexlet.code.controller;
 
-import hexlet.code.dtos.UserTO;
-import hexlet.code.services.UserService;
+import hexlet.code.dto.UserDTO;
+import hexlet.code.service.UserService;
 import hexlet.code.utils.ResponseEntityBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,13 +27,13 @@ public final class UsersController {
     private final UserService userService;
 
     @GetMapping
-    public ResponseEntity<List<UserTO>> getAll() {
-        return ResponseEntityBuilder.build(userService.getAll(), UserTO::new);
+    public ResponseEntity<List<UserDTO>> getAll() {
+        return ResponseEntityBuilder.build(userService.getAll(), UserDTO::new);
     }
 
     @GetMapping("/{id}")
-    public UserTO getById(@PathVariable Long id) {
-        return new UserTO(
+    public UserDTO getById(@PathVariable Long id) {
+        return new UserDTO(
             userService.getById(id)
         );
     }
@@ -45,16 +45,16 @@ public final class UsersController {
     }
 
     @PutMapping("/{id}")
-    public UserTO create(@PathVariable Long id, @RequestBody UserTO user) {
-        return new UserTO(
+    public UserDTO create(@PathVariable Long id, @RequestBody UserDTO user) {
+        return new UserDTO(
             userService.update(id, user)
         );
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserTO create(@RequestBody UserTO user) {
-        return new UserTO(
+    public UserDTO create(@RequestBody UserDTO user) {
+        return new UserDTO(
             userService.create(user)
         );
     }

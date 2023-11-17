@@ -1,4 +1,4 @@
-package hexlet.code.models;
+package hexlet.code.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

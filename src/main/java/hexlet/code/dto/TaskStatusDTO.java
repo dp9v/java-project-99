@@ -1,16 +1,16 @@
-package hexlet.code.dtos;
+package hexlet.code.dto;
 
-import hexlet.code.models.TaskStatus;
+import hexlet.code.model.TaskStatus;
 
 import java.time.LocalDate;
 
-public record TaskStatusTO(
+public record TaskStatusDTO(
         Long id,
         String name,
         String slug,
         LocalDate createdAt
 ) {
-    public TaskStatusTO(TaskStatus source) {
+    public TaskStatusDTO(TaskStatus source) {
         this(source.getId(), source.getName(), source.getSlug(), source.getCreatedAt());
     }
 }

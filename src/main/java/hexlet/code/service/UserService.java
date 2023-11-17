@@ -1,8 +1,8 @@
-package hexlet.code.services;
+package hexlet.code.service;
 
-import hexlet.code.dtos.UserTO;
-import hexlet.code.models.User;
-import hexlet.code.repositories.UserRepository;
+import hexlet.code.dto.UserDTO;
+import hexlet.code.model.User;
+import hexlet.code.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -33,31 +33,31 @@ public final class UserService implements UserDetailsManager {
         userRepository.deleteById(id);
     }
 
-    public User create(UserTO user) {
+    public User create(UserDTO user) {
         var userToCreate = merge(new User(), user)
             .setCreatedAt(LocalDate.now());
 
         return userRepository.save(userToCreate);
     }
 
-    public User update(Long id, UserTO user) {
+    public User update(Long id, UserDTO user) {
         var userToUpdate = merge(userRepository.findById(id).orElseThrow(), user);
 
         return userRepository.save(userToUpdate);
     }
 
-    private User merge(User user, UserTO userTO) {
-        if (isNotBlank(userTO.email())) {
-            user.setEmail(userTO.email());
+    private User merge(User user, UserDTO userDTO) {
+        if (isNotBlank(userDTO.email())) {
+            user.setEmail(userDTO.email());
         }
-        if (isNotBlank(userTO.lastName())) {
-            user.setLastName(userTO.lastName());
+        if (isNotBlank(userDTO.lastName())) {
+            user.setLastName(userDTO.lastName());
         }
-        if (isNotBlank(userTO.firstName())) {
-            user.setFirstName(userTO.firstName());
+        if (isNotBlank(userDTO.firstName())) {
+            user.setFirstName(userDTO.firstName());
         }
-        if (isNotBlank(userTO.password())) {
-            user.setPassword(passwordEncoder.encode(userTO.password()));
+        if (isNotBlank(userDTO.password())) {
+            user.setPassword(passwordEncoder.encode(userDTO.password()));
         }
 
         return user.setUpdatedAt(LocalDate.now());

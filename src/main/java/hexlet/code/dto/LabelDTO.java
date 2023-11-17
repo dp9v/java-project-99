@@ -1,15 +1,15 @@
-package hexlet.code.dtos;
+package hexlet.code.dto;
 
-import hexlet.code.models.Label;
+import hexlet.code.model.Label;
 
 import java.time.LocalDate;
 
-public record LabelTO(
+public record LabelDTO(
     Long id,
     String name,
     LocalDate createdAt
 ) {
-    public LabelTO(Label label) {
+    public LabelDTO(Label label) {
         this(
             label.getId(),
             label.getName(),

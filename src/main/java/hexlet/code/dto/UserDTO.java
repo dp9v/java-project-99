@@ -1,10 +1,10 @@
-package hexlet.code.dtos;
+package hexlet.code.dto;
 
-import hexlet.code.models.User;
+import hexlet.code.model.User;
 
 import java.time.LocalDate;
 
-public record UserTO(
+public record UserDTO(
     Long id,
 
     String email,
@@ -14,7 +14,7 @@ public record UserTO(
     LocalDate updatedAt,
     String password
 ) {
-    public UserTO(User user) {
+    public UserDTO(User user) {
         this(
             user.getId(),
             user.getEmail(),

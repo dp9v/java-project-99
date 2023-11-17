@@ -1,11 +1,11 @@
-package hexlet.code.services;
+package hexlet.code.service;
 
-import hexlet.code.dtos.TaskTO;
-import hexlet.code.models.Label;
-import hexlet.code.models.Task;
-import hexlet.code.models.User;
-import hexlet.code.repositories.TaskRepository;
-import hexlet.code.repositories.TaskStatusRepository;
+import hexlet.code.dto.TaskDTO;
+import hexlet.code.model.Label;
+import hexlet.code.model.Task;
+import hexlet.code.model.User;
+import hexlet.code.repository.TaskRepository;
+import hexlet.code.repository.TaskStatusRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -33,19 +33,19 @@ public class TaskService {
         taskRepository.deleteById(id);
     }
 
-    public Task create(TaskTO taskTO) {
-        var taskToCreate = merge(new Task(), taskTO);
+    public Task create(TaskDTO taskDTO) {
+        var taskToCreate = merge(new Task(), taskDTO);
         return taskRepository.save(taskToCreate);
     }
 
-    public Task update(Long id, TaskTO task) {
+    public Task update(Long id, TaskDTO task) {
         var taskForUpdate = taskRepository.findById(id).orElseThrow();
         return taskRepository.save(
             merge(taskForUpdate, task)
         );
     }
 
-    public Task merge(Task target, TaskTO source) {
+    public Task merge(Task target, TaskDTO source) {
         if (isNotBlank(source.status())) {
             var status = taskStatusRepository.findByName(source.status()).orElseThrow();
             target.setTaskStatus(status);

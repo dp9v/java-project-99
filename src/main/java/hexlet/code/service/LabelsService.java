@@ -1,8 +1,8 @@
-package hexlet.code.services;
+package hexlet.code.service;
 
-import hexlet.code.dtos.LabelTO;
-import hexlet.code.models.Label;
-import hexlet.code.repositories.LabelsRepository;
+import hexlet.code.dto.LabelDTO;
+import hexlet.code.model.Label;
+import hexlet.code.repository.LabelsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +23,7 @@ public class LabelsService {
         return labelsRepository.findAll();
     }
 
-    public Label create(LabelTO label) {
+    public Label create(LabelDTO label) {
         return labelsRepository.save(
             new Label()
                 .setName(label.name())
@@ -31,9 +31,9 @@ public class LabelsService {
         );
     }
 
-    public Label update(Long id, LabelTO labelTO) {
+    public Label update(Long id, LabelDTO labelDTO) {
         var label = labelsRepository.findById(id)
-            .map(l -> l.setName(labelTO.name()))
+            .map(l -> l.setName(labelDTO.name()))
             .orElseThrow();
         return labelsRepository.save(label);
     }

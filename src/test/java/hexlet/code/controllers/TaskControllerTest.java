@@ -1,15 +1,16 @@
 package hexlet.code.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hexlet.code.dtos.TaskTO;
-import hexlet.code.models.Label;
-import hexlet.code.models.Task;
-import hexlet.code.models.TaskStatus;
-import hexlet.code.models.User;
-import hexlet.code.repositories.LabelsRepository;
-import hexlet.code.repositories.TaskRepository;
-import hexlet.code.repositories.TaskStatusRepository;
-import hexlet.code.repositories.UserRepository;
+import hexlet.code.controller.TaskController;
+import hexlet.code.dto.TaskDTO;
+import hexlet.code.model.Label;
+import hexlet.code.model.Task;
+import hexlet.code.model.TaskStatus;
+import hexlet.code.model.User;
+import hexlet.code.repository.LabelsRepository;
+import hexlet.code.repository.TaskRepository;
+import hexlet.code.repository.TaskStatusRepository;
+import hexlet.code.repository.UserRepository;
 import hexlet.code.utils.ModelGenerator;
 import lombok.SneakyThrows;
 import org.instancio.Instancio;
@@ -88,9 +89,9 @@ public class TaskControllerTest {
     @Test
     public void testCreate() {
         var createdTask = Instancio.of(modelGenerator.getTaskTOModel())
-            .set(Select.field(TaskTO::status), testStatus.getName())
-            .set(Select.field(TaskTO::assigneeId), testUser.getId())
-            .set(Select.field(TaskTO::taskLabelIds), Set.of(testLabel.getId()))
+            .set(Select.field(TaskDTO::status), testStatus.getName())
+            .set(Select.field(TaskDTO::assigneeId), testUser.getId())
+            .set(Select.field(TaskDTO::taskLabelIds), Set.of(testLabel.getId()))
             .create();
 
         mockMvc.perform(post(TaskController.PATH)
@@ -115,9 +116,9 @@ public class TaskControllerTest {
         var createdTask = createTask();
 
         var taskForUpdate = Instancio.of(modelGenerator.getTaskTOModel())
-            .set(Select.field(TaskTO::status), null)
-            .set(Select.field(TaskTO::assigneeId), testUser.getId())
-            .set(Select.field(TaskTO::taskLabelIds), Set.of())
+            .set(Select.field(TaskDTO::status), null)
+            .set(Select.field(TaskDTO::assigneeId), testUser.getId())
+            .set(Select.field(TaskDTO::taskLabelIds), Set.of())
             .create();
         mockMvc.perform(put(TaskController.PATH + "/" + createdTask.getId())
             .contentType(MediaType.APPLICATION_JSON)
@@ -162,7 +163,7 @@ public class TaskControllerTest {
             .andReturn()
             .getResponse()
             .getContentAsString();
-        var task = om.readValue(response, TaskTO.class);
+        var task = om.readValue(response, TaskDTO.class);
         assertThat(task)
             .matches(t -> t.title().equals(createdTask.getName()), "task.title")
             .matches(t -> t.content().equals(createdTask.getDescription()), "task.description")

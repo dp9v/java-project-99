@@ -1,14 +1,14 @@
-package hexlet.code.dtos;
+package hexlet.code.dto;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
-import hexlet.code.models.Label;
-import hexlet.code.models.Task;
+import hexlet.code.model.Label;
+import hexlet.code.model.Task;
 
 import java.time.LocalDate;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public record TaskTO(
+public record TaskDTO(
     Long id,
     String title,
     String content,
@@ -19,7 +19,7 @@ public record TaskTO(
     LocalDate createdAt,
     Long index
 ) {
-    public TaskTO(Task task) {
+    public TaskDTO(Task task) {
         this(
             task.getId(),
             task.getName(),

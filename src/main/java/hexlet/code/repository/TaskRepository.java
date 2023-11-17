@@ -1,6 +1,6 @@
-package hexlet.code.repositories;
+package hexlet.code.repository;
 
-import hexlet.code.models.Task;
+import hexlet.code.model.Task;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 

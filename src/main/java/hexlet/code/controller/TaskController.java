@@ -1,8 +1,8 @@
-package hexlet.code.controllers;
+package hexlet.code.controller;
 
-import hexlet.code.dtos.TaskFilterRequest;
-import hexlet.code.dtos.TaskTO;
-import hexlet.code.services.TaskService;
+import hexlet.code.dto.TaskFilterRequest;
+import hexlet.code.dto.TaskDTO;
+import hexlet.code.service.TaskService;
 import hexlet.code.utils.ResponseEntityBuilder;
 import hexlet.code.utils.TaskSpecificationBuilder;
 import lombok.RequiredArgsConstructor;
@@ -30,16 +30,16 @@ public class TaskController {
     private final TaskSpecificationBuilder taskSpecificationBuilder;
 
     @GetMapping
-    public ResponseEntity<List<TaskTO>> getAll(TaskFilterRequest filter) {
+    public ResponseEntity<List<TaskDTO>> getAll(TaskFilterRequest filter) {
         return ResponseEntityBuilder.build(
                 taskService.getAll(taskSpecificationBuilder.build(filter)),
-                TaskTO::new
+                TaskDTO::new
         );
     }
 
     @GetMapping("/{id}")
-    public TaskTO getById(@PathVariable Long id) {
-        return new TaskTO(
+    public TaskDTO getById(@PathVariable Long id) {
+        return new TaskDTO(
                 taskService.getById(id)
         );
     }
@@ -52,16 +52,16 @@ public class TaskController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public TaskTO create(@RequestBody TaskTO taskStatus) {
-        return new TaskTO(
+    public TaskDTO create(@RequestBody TaskDTO taskStatus) {
+        return new TaskDTO(
                 taskService.create(taskStatus)
         );
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public TaskTO update(@PathVariable Long id, @RequestBody TaskTO task) {
-        return new TaskTO(
+    public TaskDTO update(@PathVariable Long id, @RequestBody TaskDTO task) {
+        return new TaskDTO(
                 taskService.update(id, task)
         );
     }

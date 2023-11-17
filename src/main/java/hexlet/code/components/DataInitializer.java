@@ -3,7 +3,7 @@ package hexlet.code.components;
 import hexlet.code.model.Label;
 import hexlet.code.model.TaskStatus;
 import hexlet.code.model.User;
-import hexlet.code.repository.LabelsRepository;
+import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,7 @@ public class DataInitializer implements ApplicationRunner {
 
     private final UserRepository userRepository;
     private final TaskStatusRepository taskStatusRepository;
-    private final LabelsRepository labelsRepository;
+    private final LabelRepository labelRepository;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -60,11 +60,11 @@ public class DataInitializer implements ApplicationRunner {
                 .collect(Collectors.toSet());
 
         var createdLabels = DEFAULT_LABELS.stream()
-                .map(l -> labelsRepository.findByName(l)
+                .map(l -> labelRepository.findByName(l)
                         .orElse(new Label()
                                 .setName(l)
                                 .setCreatedAt(LocalDate.now()))
-                ).peek(labelsRepository::save)
+                ).peek(labelRepository::save)
                 .collect(Collectors.toSet());
     }
 }

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.controller.LabelsController;
 import hexlet.code.dto.LabelDTO;
 import hexlet.code.model.Label;
-import hexlet.code.repository.LabelsRepository;
+import hexlet.code.repository.LabelRepository;
 import hexlet.code.utils.ModelGenerator;
 import lombok.SneakyThrows;
 import org.instancio.Instancio;
@@ -33,7 +33,7 @@ public final class LabelsControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
-    private LabelsRepository labelsRepository;
+    private LabelRepository labelRepository;
     @Autowired
     private ModelGenerator modelGenerator;
     @Autowired
@@ -41,7 +41,7 @@ public final class LabelsControllerTest {
 
     @AfterEach
     public void clear() {
-        labelsRepository.deleteAll();
+        labelRepository.deleteAll();
     }
 
     @SneakyThrows
@@ -56,7 +56,7 @@ public final class LabelsControllerTest {
                         .content(om.writeValueAsString(labelToCreate))
         ).andExpect(status().isCreated());
 
-        var labels = labelsRepository.findAll();
+        var labels = labelRepository.findAll();
         assertThat(labels).hasSize(1);
         assertThat(labels.get(0))
                 .matches(s -> s.getName().equals(labelToCreate.name()), "label.name");
@@ -77,7 +77,7 @@ public final class LabelsControllerTest {
                         .content(om.writeValueAsString(labelForUpdate))
         ).andExpect(status().isOk());
 
-        var updatedLabel = labelsRepository.findById(createdLabel.getId()).orElseThrow();
+        var updatedLabel = labelRepository.findById(createdLabel.getId()).orElseThrow();
         assertThat(updatedLabel)
             .matches(s -> s.getName().equals(labelForUpdate.name()), "label.name");
     }
@@ -108,7 +108,7 @@ public final class LabelsControllerTest {
                 .stream()
                 .limit(3)
                 .toList();
-        labelsRepository.saveAll(labelsToCreate);
+        labelRepository.saveAll(labelsToCreate);
 
         var response = mockMvc.perform(get(LabelsController.PATH).with(jwt()))
                 .andExpect(status().isOk())
@@ -128,12 +128,12 @@ public final class LabelsControllerTest {
         mockMvc.perform(delete(LabelsController.PATH + "/" + createdLabel.getId()).with(jwt()))
                 .andExpect(status().isNoContent());
 
-        assertThat(labelsRepository.count()).isZero();
+        assertThat(labelRepository.count()).isZero();
     }
 
     private Label createLabel() {
         var label = Instancio.of(modelGenerator.getLabelModel())
                 .create();
-        return labelsRepository.save(label);
+        return labelRepository.save(label);
     }
 }

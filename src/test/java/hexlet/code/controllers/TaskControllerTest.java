@@ -7,7 +7,7 @@ import hexlet.code.model.Label;
 import hexlet.code.model.Task;
 import hexlet.code.model.TaskStatus;
 import hexlet.code.model.User;
-import hexlet.code.repository.LabelsRepository;
+import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.repository.UserRepository;
@@ -55,7 +55,7 @@ public class TaskControllerTest {
     private UserRepository userRepository;
 
     @Autowired
-    private LabelsRepository labelsRepository;
+    private LabelRepository labelRepository;
 
     @Autowired
     private ModelGenerator modelGenerator;
@@ -72,7 +72,7 @@ public class TaskControllerTest {
         testUser = userRepository.save(
             Instancio.of(modelGenerator.getUserModel()).create()
         );
-        testLabel = labelsRepository.save(
+        testLabel = labelRepository.save(
             Instancio.of(modelGenerator.getLabelModel()).create()
         );
     }
@@ -82,7 +82,7 @@ public class TaskControllerTest {
         taskRepository.deleteAll();
         userRepository.deleteAll();
         taskStatusRepository.deleteAll();
-        labelsRepository.deleteAll();
+        labelRepository.deleteAll();
     }
 
     @SneakyThrows

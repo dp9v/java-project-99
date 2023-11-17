@@ -2,7 +2,7 @@ package hexlet.code.service;
 
 import hexlet.code.dto.LabelDTO;
 import hexlet.code.model.Label;
-import hexlet.code.repository.LabelsRepository;
+import hexlet.code.repository.LabelRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,19 +12,19 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class LabelsService {
-    private final LabelsRepository labelsRepository;
+    private final LabelRepository labelRepository;
 
     public Label getById(Long id) {
-        return labelsRepository.findById(id)
+        return labelRepository.findById(id)
             .orElseThrow();
     }
 
     public List<Label> getAll() {
-        return labelsRepository.findAll();
+        return labelRepository.findAll();
     }
 
     public Label create(LabelDTO label) {
-        return labelsRepository.save(
+        return labelRepository.save(
             new Label()
                 .setName(label.name())
                 .setCreatedAt(LocalDate.now())
@@ -32,13 +32,13 @@ public class LabelsService {
     }
 
     public Label update(Long id, LabelDTO labelDTO) {
-        var label = labelsRepository.findById(id)
+        var label = labelRepository.findById(id)
             .map(l -> l.setName(labelDTO.name()))
             .orElseThrow();
-        return labelsRepository.save(label);
+        return labelRepository.save(label);
     }
 
     public void delete(Long id) {
-        labelsRepository.deleteById(id);
+        labelRepository.deleteById(id);
     }
 }

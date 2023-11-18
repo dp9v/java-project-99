@@ -27,28 +27,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@ActiveProfiles("test")
-public final class LabelsControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-    @Autowired
-    private LabelRepository labelRepository;
-    @Autowired
-    private ModelGenerator modelGenerator;
-    @Autowired
-    private ObjectMapper om;
-
-    @AfterEach
-    public void clear() {
-        labelRepository.deleteAll();
-    }
+public final class LabelsControllerTest extends BaseIT {
 
     @SneakyThrows
     @Test
     public void testCreate() {
+        labelRepository.deleteAll();
         var labelToCreate = new LabelDTO(
             Instancio.of(modelGenerator.getLabelModel()).create()
         );
@@ -110,7 +94,7 @@ public final class LabelsControllerTest {
     public void testGetAll() {
         var labelsToCreate = Instancio.of(modelGenerator.getLabelModel())
             .stream()
-            .limit(10)
+            .limit(3)
             .toList();
         labelRepository.saveAll(labelsToCreate);
 
@@ -121,23 +105,17 @@ public final class LabelsControllerTest {
             .getContentAsString();
 
         var labels = om.readValue(response, List.class);
-        assertThat(labels).hasSize(10);
+        assertThat(labels).hasSize(4);
     }
 
 
     @Test
     @SneakyThrows
     public void testDelete() {
-        var createdLabel = createLabel();
-        mockMvc.perform(delete(LabelsController.PATH + "/" + createdLabel.getId()).with(jwt()))
+        mockMvc.perform(delete(LabelsController.PATH + "/" + testLabel.getId()).with(jwt()))
             .andExpect(status().isNoContent());
 
         assertThat(labelRepository.count()).isZero();
     }
 
-    private Label createLabel() {
-        var label = Instancio.of(modelGenerator.getLabelModel())
-            .create();
-        return labelRepository.save(label);
-    }
 }

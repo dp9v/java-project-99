@@ -28,31 +28,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@ActiveProfiles("test")
-public final class UserControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private ModelGenerator modelGenerator;
-    @Autowired
-    private ObjectMapper om;
-
-    private User testUser;
-
-    @BeforeEach
-    public void setUp() {
-        testUser = createUser();
-    }
-
-    @AfterEach
-    public void clear() {
-        userRepository.deleteAll();
-    }
+public final class UserControllerTest extends BaseIT {
 
     @SneakyThrows
     @Test
@@ -135,14 +111,4 @@ public final class UserControllerTest {
         assertThat(userRepository.count()).isZero();
     }
 
-    private User createUser() {
-        return userRepository.save(
-            generateUser()
-        );
-    }
-
-    private User generateUser() {
-        return Instancio.of(modelGenerator.getUserModel())
-            .create();
-    }
 }

@@ -4,7 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.controller.TaskStatusController;
 import hexlet.code.dto.TaskStatusDTO;
 import hexlet.code.model.TaskStatus;
+import hexlet.code.repository.LabelRepository;
+import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.TaskStatusRepository;
+import hexlet.code.repository.UserRepository;
 import hexlet.code.utils.ModelGenerator;
 import lombok.SneakyThrows;
 import org.assertj.core.api.AssertionsForClassTypes;
@@ -30,28 +33,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@ActiveProfiles("test")
-public final class TaskStatusControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-    @Autowired
-    private TaskStatusRepository taskStatusRepository;
-    @Autowired
-    private ModelGenerator modelGenerator;
-    @Autowired
-    private ObjectMapper om;
-
-    @AfterEach
-    public void clear() {
-        taskStatusRepository.deleteAll();
-    }
+public final class TaskStatusControllerTest extends BaseIT {
 
     @SneakyThrows
     @Test
     public void testCreate() {
+        taskStatusRepository.deleteAll();
         var statusToCreate = new TaskStatusDTO(generateStatus());
 
         mockMvc.perform(
@@ -125,28 +112,16 @@ public final class TaskStatusControllerTest {
                 .getContentAsString();
 
         var statuses = om.readValue(response, List.class);
-        assertThat(statuses).hasSize(5);
+        assertThat(statuses).hasSize(6);
     }
 
 
     @Test
     @SneakyThrows
     public void testDelete() {
-        var createdStatus = createStatus();
-        mockMvc.perform(delete(TaskStatusController.PATH + "/" + createdStatus.getId()).with(jwt()))
+        mockMvc.perform(delete(TaskStatusController.PATH + "/" + testStatus.getId()).with(jwt()))
                 .andExpect(status().isNoContent());
 
         assertThat(taskStatusRepository.count()).isZero();
-    }
-
-    private TaskStatus createStatus() {
-        return taskStatusRepository.save(
-            generateStatus()
-        );
-    }
-
-    private TaskStatus generateStatus() {
-        return Instancio.of(modelGenerator.getTaskStatusModel())
-            .create();
     }
 }

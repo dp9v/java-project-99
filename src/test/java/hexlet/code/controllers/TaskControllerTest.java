@@ -37,55 +37,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@ActiveProfiles("test")
-public class TaskControllerTest {
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper om;
-
-    @Autowired
-    private TaskRepository taskRepository;
-
-    @Autowired
-    private TaskStatusRepository taskStatusRepository;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private LabelRepository labelRepository;
-
-    @Autowired
-    private ModelGenerator modelGenerator;
-
-    private Label testLabel;
-    private TaskStatus testStatus;
-    private User testUser;
-
-    @BeforeEach
-    public void setUp() {
-        testStatus = taskStatusRepository.save(
-            Instancio.of(modelGenerator.getTaskStatusModel()).create()
-        );
-        testUser = userRepository.save(
-            Instancio.of(modelGenerator.getUserModel()).create()
-        );
-        testLabel = labelRepository.save(
-            Instancio.of(modelGenerator.getLabelModel()).create()
-        );
-    }
-
-    @AfterEach
-    public void clear() {
-        taskRepository.deleteAll();
-        userRepository.deleteAll();
-        taskStatusRepository.deleteAll();
-        labelRepository.deleteAll();
-    }
+public class TaskControllerTest extends BaseIT {
 
     @SneakyThrows
     @Test
@@ -176,15 +128,4 @@ public class TaskControllerTest {
         assertThat(taskRepository.count()).isZero();
     }
 
-    private Task createTask() {
-        return taskRepository.save(generateTask());
-    }
-
-    public Task generateTask() {
-        return Instancio.of(modelGenerator.getTaskModel())
-            .set(Select.field(Task::getTaskStatus), testStatus)
-            .set(Select.field(Task::getAssignee), testUser)
-            .set(Select.field(Task::getLabels), Set.of(testLabel))
-            .create();
-    }
 }

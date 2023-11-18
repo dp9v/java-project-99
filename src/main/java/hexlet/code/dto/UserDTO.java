@@ -4,6 +4,7 @@ import hexlet.code.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.openapitools.jackson.nullable.JsonNullable;
 
 import java.time.LocalDate;
 
@@ -13,22 +14,20 @@ import java.time.LocalDate;
 public class UserDTO {
 
     private Long id;
-    private String email;
-    private String firstName;
-    private String lastName;
+    private JsonNullable<String> email = JsonNullable.undefined();
+    private JsonNullable<String> firstName = JsonNullable.undefined();
+    private JsonNullable<String> lastName = JsonNullable.undefined();
+    private JsonNullable<String> password = JsonNullable.undefined();
     private LocalDate createdAt;
-    private LocalDate updatedAt;
-    private String password;
 
     public UserDTO(User user) {
         this(
             user.getId(),
-            user.getEmail(),
-            user.getFirstName(),
-            user.getLastName(),
-            user.getCreatedAt(),
-            null,
-            null
+            JsonNullable.of(user.getEmail()),
+            JsonNullable.of(user.getFirstName()),
+            JsonNullable.of(user.getLastName()),
+            JsonNullable.undefined(),
+            user.getCreatedAt()
         );
     }
 }

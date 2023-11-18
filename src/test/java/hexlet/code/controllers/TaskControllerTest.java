@@ -88,11 +88,7 @@ public class TaskControllerTest {
     @SneakyThrows
     @Test
     public void testCreate() {
-        var createdTask = Instancio.of(modelGenerator.getTaskTOModel())
-            .set(Select.field(TaskDTO::getTaskStatusSlug), testStatus.getName())
-            .set(Select.field(TaskDTO::getAssigneeId), testUser.getId())
-            .set(Select.field(TaskDTO::getTaskLabelIds), Set.of(testLabel.getId()))
-            .create();
+        var createdTask = new TaskDTO(generateTask());
 
         mockMvc.perform(post(TaskController.PATH)
             .contentType(MediaType.APPLICATION_JSON)
@@ -103,8 +99,8 @@ public class TaskControllerTest {
         var tasks = taskRepository.findAll();
         assertThat(tasks).hasSize(1);
         assertThat(tasks.get(0))
-            .matches(t -> t.getName().equals(createdTask.getName()), "task.title")
-            .matches(t -> t.getDescription().equals(createdTask.getDescription()), "task.description")
+            .matches(t -> t.getName().equals(createdTask.getName().get()), "task.title")
+            .matches(t -> t.getDescription().equals(createdTask.getDescription().get()), "task.description")
             .matches(t -> t.getTaskStatus().equals(testStatus), "task.status")
             .matches(t -> t.getAssignee().equals(testUser), "task.assignee")
             .matches(t -> t.getLabels().equals(Set.of(testLabel)), "task.labels");
@@ -114,12 +110,7 @@ public class TaskControllerTest {
     @SneakyThrows
     public void testUpdate() {
         var createdTask = createTask();
-
-        var taskForUpdate = Instancio.of(modelGenerator.getTaskTOModel())
-            .set(Select.field(TaskDTO::getTaskStatusSlug), null)
-            .set(Select.field(TaskDTO::getAssigneeId), testUser.getId())
-            .set(Select.field(TaskDTO::getTaskLabelIds), Set.of())
-            .create();
+        var taskForUpdate = new TaskDTO(generateTask());
         mockMvc.perform(put(TaskController.PATH + "/" + createdTask.getId())
             .contentType(MediaType.APPLICATION_JSON)
             .content(om.writeValueAsString(taskForUpdate))
@@ -128,11 +119,11 @@ public class TaskControllerTest {
 
         var task = taskRepository.findById(createdTask.getId()).orElseThrow();
         assertThat(task)
-            .matches(t -> t.getName().equals(taskForUpdate.getName()), "task.title")
-            .matches(t -> t.getDescription().equals(taskForUpdate.getDescription()), "task.description")
+            .matches(t -> t.getName().equals(taskForUpdate.getName().get()), "task.title")
+            .matches(t -> t.getDescription().equals(taskForUpdate.getDescription().get()), "task.description")
             .matches(t -> t.getTaskStatus().equals(testStatus), "task.status")
             .matches(t -> t.getAssignee().equals(testUser), "task.assignee")
-            .matches(t -> t.getLabels().isEmpty(), "task.labels");
+            .matches(t -> t.getLabels().equals(Set.of(testLabel)), "task.labels");
     }
 
 
@@ -165,11 +156,11 @@ public class TaskControllerTest {
             .getContentAsString();
         var task = om.readValue(response, TaskDTO.class);
         assertThat(task)
-            .matches(t -> t.getName().equals(createdTask.getName()), "task.title")
-            .matches(t -> t.getDescription().equals(createdTask.getDescription()), "task.description")
-            .matches(t -> t.getTaskStatusSlug().equals(testStatus.getName()), "task.status")
-            .matches(t -> t.getAssigneeId().equals(testUser.getId()), "task.assignee")
-            .matches(t -> t.getTaskLabelIds().equals(Set.of(testLabel.getId())), "task.labels");
+            .matches(t -> t.getName().get().equals(createdTask.getName()), "task.title")
+            .matches(t -> t.getDescription().get().equals(createdTask.getDescription()), "task.description")
+            .matches(t -> t.getTaskStatusSlug().get().equals(testStatus.getName()), "task.status")
+            .matches(t -> t.getAssigneeId().get().equals(testUser.getId()), "task.assignee")
+            .matches(t -> t.getTaskLabelIds().get().equals(Set.of(testLabel.getId())), "task.labels");
     }
 
     @SneakyThrows
@@ -184,11 +175,14 @@ public class TaskControllerTest {
     }
 
     private Task createTask() {
-        var taskToCreate = Instancio.of(modelGenerator.getTaskModel())
+        return taskRepository.save(generateTask());
+    }
+
+    public Task generateTask() {
+        return Instancio.of(modelGenerator.getTaskModel())
             .set(Select.field(Task::getTaskStatus), testStatus)
             .set(Select.field(Task::getAssignee), testUser)
             .set(Select.field(Task::getLabels), Set.of(testLabel))
             .create();
-        return taskRepository.save(taskToCreate);
     }
 }

@@ -47,19 +47,12 @@ public final class UserService implements UserDetailsManager {
     }
 
     private User merge(User user, UserDTO userDTO) {
-        if (isNotBlank(userDTO.getEmail())) {
-            user.setEmail(userDTO.getEmail());
-        }
-        if (isNotBlank(userDTO.getLastName())) {
-            user.setLastName(userDTO.getLastName());
-        }
-        if (isNotBlank(userDTO.getFirstName())) {
-            user.setFirstName(userDTO.getFirstName());
-        }
-        if (isNotBlank(userDTO.getPassword())) {
-            user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        }
-
+        userDTO.getEmail().ifPresent(user::setEmail);
+        userDTO.getLastName().ifPresent(user::setLastName);
+        userDTO.getFirstName().ifPresent(user::setFirstName);
+        userDTO.getPassword().ifPresent(p -> user.setPassword(
+            passwordEncoder.encode(p)
+        ));
         return user.setUpdatedAt(LocalDate.now());
     }
 

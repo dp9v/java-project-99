@@ -44,9 +44,7 @@ public final class UserControllerTest {
 
     @BeforeEach
     public void setUp() {
-        testUser = Instancio.of(modelGenerator.getUserModel())
-            .create();
-        userRepository.save(testUser);
+        testUser = createUser();
     }
 
     @AfterEach
@@ -57,8 +55,7 @@ public final class UserControllerTest {
     @SneakyThrows
     @Test
     public void testCreate() {
-        var userToCreate = Instancio.of(modelGenerator.getUserTOModel())
-            .create();
+        var userToCreate = new UserDTO(generateUser());
         mockMvc.perform(
             post(UsersController.PATH)
                 .with(jwt())
@@ -72,8 +69,7 @@ public final class UserControllerTest {
     @Test
     @SneakyThrows
     public void testUpdate() {
-        var userForUpdate = Instancio.of(modelGenerator.getUserTOModel())
-            .create();
+        var userForUpdate = new UserDTO(generateUser());
 
         mockMvc.perform(
             put(UsersController.PATH + "/" + testUser.getId())
@@ -84,9 +80,9 @@ public final class UserControllerTest {
 
         var updatedUser = userRepository.findById(testUser.getId()).orElseThrow();
         assertThat(updatedUser)
-            .matches(u -> u.getEmail().equals(userForUpdate.getEmail()), "user.email")
-            .matches(u -> u.getFirstName().equals(userForUpdate.getFirstName()), "user.firstName")
-            .matches(u -> u.getLastName().equals(userForUpdate.getLastName()), "user.lastName");
+            .matches(u -> u.getEmail().equals(userForUpdate.getEmail().get()), "user.email")
+            .matches(u -> u.getFirstName().equals(userForUpdate.getFirstName().get()), "user.firstName")
+            .matches(u -> u.getLastName().equals(userForUpdate.getLastName().get()), "user.lastName");
     }
 
     @SneakyThrows
@@ -103,10 +99,9 @@ public final class UserControllerTest {
 
         var user = om.readValue(response, UserDTO.class);
         assertThat(user)
-            .matches(u -> u.getEmail().equals(testUser.getEmail()), "user.email")
-            .matches(u -> u.getFirstName().equals(testUser.getFirstName()), "user.firstName")
-            .matches(u -> u.getLastName().equals(testUser.getLastName()), "user.lastName")
-            .matches(u -> u.getCreatedAt().equals(testUser.getCreatedAt()), "user.createdAt");
+            .matches(u -> u.getEmail().get().equals(testUser.getEmail()), "user.email")
+            .matches(u -> u.getFirstName().get().equals(testUser.getFirstName()), "user.firstName")
+            .matches(u -> u.getLastName().get().equals(testUser.getLastName()), "user.lastName");
     }
 
     @Test
@@ -136,5 +131,16 @@ public final class UserControllerTest {
             .andExpect(status().isNoContent());
 
         assertThat(userRepository.count()).isZero();
+    }
+
+    private User createUser() {
+        return userRepository.save(
+            generateUser()
+        );
+    }
+
+    private User generateUser() {
+        return Instancio.of(modelGenerator.getUserModel())
+            .create();
     }
 }

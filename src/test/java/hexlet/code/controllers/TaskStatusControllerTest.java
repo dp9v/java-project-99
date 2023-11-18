@@ -50,8 +50,8 @@ public final class TaskStatusControllerTest {
     @SneakyThrows
     @Test
     public void testCreate() {
-        var statusToCreate = Instancio.of(modelGenerator.getTaskStatusTOModel())
-                .create();
+        var statusToCreate = new TaskStatusDTO(generateStatus());
+
         mockMvc.perform(
                 post(TaskStatusController.PATH)
                         .with(jwt())
@@ -62,8 +62,8 @@ public final class TaskStatusControllerTest {
         var statuses = taskStatusRepository.findAll();
         AssertionsForInterfaceTypes.assertThat(statuses).hasSize(1);
         AssertionsForClassTypes.assertThat(statuses.get(0))
-                .matches(s -> s.getName().equals(statusToCreate.getName()), "taskStatus.title")
-                .matches(s -> s.getSlug().equals(statusToCreate.getSlug()), "taskStatus.slug")
+                .matches(s -> s.getName().equals(statusToCreate.getName().get()), "taskStatus.title")
+                .matches(s -> s.getSlug().equals(statusToCreate.getSlug().get()), "taskStatus.slug")
                 .matches(s -> s.getCreatedAt().equals(LocalDate.now()), "taskStatus.createdAt");
     }
 
@@ -72,8 +72,7 @@ public final class TaskStatusControllerTest {
     public void testUpdate() {
         var createdStatus = createStatus();
 
-        var statusForUpdate = Instancio.of(modelGenerator.getTaskStatusTOModel())
-                .create();
+        var statusForUpdate = generateStatus();
 
         mockMvc.perform(
                 put(TaskStatusController.PATH + "/" + createdStatus.getId())
@@ -104,8 +103,8 @@ public final class TaskStatusControllerTest {
 
         var status = om.readValue(response, TaskStatusDTO.class);
         assertThat(status)
-                .matches(s -> s.getName().equals(createdStatus.getName()), "taskStatus.title")
-                .matches(s -> s.getSlug().equals(createdStatus.getSlug()), "taskStatus.slug");
+                .matches(s -> s.getName().get().equals(createdStatus.getName()), "taskStatus.title")
+                .matches(s -> s.getSlug().get().equals(createdStatus.getSlug()), "taskStatus.slug");
     }
 
     @Test
@@ -139,8 +138,13 @@ public final class TaskStatusControllerTest {
     }
 
     private TaskStatus createStatus() {
-        var status = Instancio.of(modelGenerator.getTaskStatusModel())
-                .create();
-        return taskStatusRepository.save(status);
+        return taskStatusRepository.save(
+            generateStatus()
+        );
+    }
+
+    private TaskStatus generateStatus() {
+        return Instancio.of(modelGenerator.getTaskStatusModel())
+            .create();
     }
 }

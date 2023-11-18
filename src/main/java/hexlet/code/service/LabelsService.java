@@ -25,20 +25,26 @@ public class LabelsService {
 
     public Label create(LabelDTO label) {
         return labelRepository.save(
-            new Label()
-                .setName(label.getName())
+            merge(new Label(), label)
                 .setCreatedAt(LocalDate.now())
         );
     }
 
     public Label update(Long id, LabelDTO labelDTO) {
-        var label = labelRepository.findById(id)
-            .map(l -> l.setName(labelDTO.getName()))
-            .orElseThrow();
-        return labelRepository.save(label);
+        return labelRepository.save(
+            merge(
+                labelRepository.findById(id).orElseThrow(),
+                labelDTO
+            )
+        );
     }
 
     public void delete(Long id) {
         labelRepository.deleteById(id);
+    }
+
+    private Label merge(Label target, LabelDTO labelDTO) {
+        labelDTO.getName().ifPresent(target::setName);
+        return target;
     }
 }

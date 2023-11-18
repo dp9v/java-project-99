@@ -3,6 +3,7 @@ package hexlet.code.service;
 import hexlet.code.dto.TaskDTO;
 import hexlet.code.model.Label;
 import hexlet.code.model.Task;
+import hexlet.code.model.TaskStatus;
 import hexlet.code.model.User;
 import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.TaskStatusRepository;
@@ -46,28 +47,20 @@ public class TaskService {
     }
 
     public Task merge(Task target, TaskDTO source) {
-        if (isNotBlank(source.getTaskStatusSlug())) {
-            var status = taskStatusRepository.findByName(source.getTaskStatusSlug()).orElseThrow();
-            target.setTaskStatus(status);
-        }
-        if (source.getTaskLabelIds() != null) {
-            var labels = source.getTaskLabelIds().stream()
+        source.getTaskStatusSlug().ifPresent(s-> target.setTaskStatus(
+            taskStatusRepository.findByName(s).orElseThrow()
+        ));
+        source.getTaskLabelIds().ifPresent(labels -> target.setLabels(
+            labels.stream()
                 .map(id -> new Label().setId(id))
-                .collect(Collectors.toSet());
-            target.setLabels(labels);
-        }
-        if (isNotBlank(source.getName())) {
-            target.setName(source.getName());
-        }
-        if (isNotBlank(source.getDescription())) {
-            target.setDescription(source.getDescription());
-        }
-        if (source.getIndex() != null) {
-            target.setIndex(source.getIndex());
-        }
-        if (source.getAssigneeId() != null) {
-            target.setAssignee(new User().setId(source.getAssigneeId()));
-        }
+                .collect(Collectors.toSet())
+        ));
+        source.getName().ifPresent(target::setName);
+        source.getDescription().ifPresent(target::setDescription);
+        source.getIndex().ifPresent(target::setIndex);
+        source.getAssigneeId().ifPresent(id -> target.setAssignee(
+            new User().setId(id)
+        ));
         return target;
     }
 }

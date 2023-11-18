@@ -4,6 +4,7 @@ import hexlet.code.model.Label;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.openapitools.jackson.nullable.JsonNullable;
 
 import java.time.LocalDate;
 
@@ -13,12 +14,12 @@ import java.time.LocalDate;
 public class LabelDTO {
 
     private Long id;
-    private String name;
+    private JsonNullable<String> name = JsonNullable.undefined();
     private LocalDate createdAt;
     public LabelDTO(Label label) {
         this(
             label.getId(),
-            label.getName(),
+            JsonNullable.of(label.getName()),
             label.getCreatedAt()
         );
     }

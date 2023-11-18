@@ -1,6 +1,6 @@
 package hexlet.code.dto;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import hexlet.code.model.Label;
 import hexlet.code.model.Task;
 import lombok.AllArgsConstructor;
@@ -17,13 +17,13 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class TaskDTO {
     private Long id;
-    @JsonAlias("title")
+    @JsonProperty("title")
     private JsonNullable<String> name = JsonNullable.undefined();
-    @JsonAlias("content")
+    @JsonProperty("content")
     private JsonNullable<String> description = JsonNullable.undefined();
-    @JsonAlias("assignee_id")
+    @JsonProperty("assignee_id")
     private JsonNullable<Long> assigneeId = JsonNullable.undefined();
-    @JsonAlias("status")
+    @JsonProperty("status")
     private JsonNullable<String> taskStatusSlug = JsonNullable.undefined();
     private JsonNullable<Set<Long>> taskLabelIds = JsonNullable.undefined();
     private JsonNullable<Long> index = JsonNullable.undefined();

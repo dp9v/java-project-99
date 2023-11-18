@@ -1,9 +1,5 @@
 package hexlet.code.utils;
 
-import hexlet.code.dto.LabelDTO;
-import hexlet.code.dto.TaskStatusDTO;
-import hexlet.code.dto.TaskDTO;
-import hexlet.code.dto.UserDTO;
 import hexlet.code.model.Label;
 import hexlet.code.model.Task;
 import hexlet.code.model.TaskStatus;

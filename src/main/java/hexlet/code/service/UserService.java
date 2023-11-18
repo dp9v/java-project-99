@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 @Service
 @RequiredArgsConstructor

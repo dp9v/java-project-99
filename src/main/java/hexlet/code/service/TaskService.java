@@ -3,7 +3,6 @@ package hexlet.code.service;
 import hexlet.code.dto.TaskDTO;
 import hexlet.code.model.Label;
 import hexlet.code.model.Task;
-import hexlet.code.model.TaskStatus;
 import hexlet.code.model.User;
 import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.TaskStatusRepository;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static io.micrometer.common.util.StringUtils.isNotBlank;
 
 @Service
 @RequiredArgsConstructor
@@ -47,7 +45,7 @@ public class TaskService {
     }
 
     public Task merge(Task target, TaskDTO source) {
-        source.getTaskStatusSlug().ifPresent(s-> target.setTaskStatus(
+        source.getTaskStatusSlug().ifPresent(s -> target.setTaskStatus(
             taskStatusRepository.findByName(s).orElseThrow()
         ));
         source.getTaskLabelIds().ifPresent(labels -> target.setLabels(

@@ -1,29 +1,10 @@
 package hexlet.code.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.controller.TaskController;
 import hexlet.code.dto.TaskDTO;
-import hexlet.code.model.Label;
-import hexlet.code.model.Task;
-import hexlet.code.model.TaskStatus;
-import hexlet.code.model.User;
-import hexlet.code.repository.LabelRepository;
-import hexlet.code.repository.TaskRepository;
-import hexlet.code.repository.TaskStatusRepository;
-import hexlet.code.repository.UserRepository;
-import hexlet.code.utils.ModelGenerator;
 import lombok.SneakyThrows;
-import org.instancio.Instancio;
-import org.instancio.Select;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 import java.util.Set;
@@ -44,20 +25,20 @@ public class TaskControllerTest extends BaseIT {
     public void testCreate() {
         var createdTask = new TaskDTO(generateTask());
 
-        mockMvc.perform(post(TaskController.PATH)
+        getMockMvc().perform(post(TaskController.PATH)
             .contentType(MediaType.APPLICATION_JSON)
-            .content(om.writeValueAsString(createdTask))
+            .content(getOm().writeValueAsString(createdTask))
             .with(jwt())
         ).andExpect(status().isCreated());
 
-        var tasks = taskRepository.findAll();
+        var tasks = getTaskRepository().findAll();
         assertThat(tasks).hasSize(1);
         assertThat(tasks.get(0))
             .matches(t -> t.getName().equals(createdTask.getName().get()), "task.title")
             .matches(t -> t.getDescription().equals(createdTask.getDescription().get()), "task.description")
-            .matches(t -> t.getTaskStatus().equals(testStatus), "task.status")
-            .matches(t -> t.getAssignee().equals(testUser), "task.assignee")
-            .matches(t -> t.getLabels().equals(Set.of(testLabel)), "task.labels");
+            .matches(t -> t.getTaskStatus().equals(getTestStatus()), "task.status")
+            .matches(t -> t.getAssignee().equals(getTestUser()), "task.assignee")
+            .matches(t -> t.getLabels().equals(Set.of(getTestLabel())), "task.labels");
     }
 
     @Test
@@ -65,19 +46,19 @@ public class TaskControllerTest extends BaseIT {
     public void testUpdate() {
         var createdTask = createTask();
         var taskForUpdate = new TaskDTO(generateTask());
-        mockMvc.perform(put(TaskController.PATH + "/" + createdTask.getId())
+        getMockMvc().perform(put(TaskController.PATH + "/" + createdTask.getId())
             .contentType(MediaType.APPLICATION_JSON)
-            .content(om.writeValueAsString(taskForUpdate))
+            .content(getOm().writeValueAsString(taskForUpdate))
             .with(jwt())
         ).andExpect(status().isOk());
 
-        var task = taskRepository.findById(createdTask.getId()).orElseThrow();
+        var task = getTaskRepository().findById(createdTask.getId()).orElseThrow();
         assertThat(task)
             .matches(t -> t.getName().equals(taskForUpdate.getName().get()), "task.title")
             .matches(t -> t.getDescription().equals(taskForUpdate.getDescription().get()), "task.description")
-            .matches(t -> t.getTaskStatus().equals(testStatus), "task.status")
-            .matches(t -> t.getAssignee().equals(testUser), "task.assignee")
-            .matches(t -> t.getLabels().equals(Set.of(testLabel)), "task.labels");
+            .matches(t -> t.getTaskStatus().equals(getTestStatus()), "task.status")
+            .matches(t -> t.getAssignee().equals(getTestUser()), "task.assignee")
+            .matches(t -> t.getLabels().equals(Set.of(getTestLabel())), "task.labels");
     }
 
 
@@ -88,12 +69,12 @@ public class TaskControllerTest extends BaseIT {
             .limit(5)
             .count();
 
-        var response = mockMvc.perform(get(TaskController.PATH).with(jwt()))
+        var response = getMockMvc().perform(get(TaskController.PATH).with(jwt()))
             .andExpect(status().isOk())
             .andReturn()
             .getResponse()
             .getContentAsString();
-        var tasks = om.readValue(response, List.class);
+        var tasks = getOm().readValue(response, List.class);
         assertThat(tasks).hasSize((int) createTasksCount);
     }
 
@@ -102,30 +83,30 @@ public class TaskControllerTest extends BaseIT {
     public void testGet() {
         var createdTask = createTask();
 
-        var response = mockMvc
+        var response = getMockMvc()
             .perform(get(TaskController.PATH + "/" + createdTask.getId()).with(jwt()))
             .andExpect(status().isOk())
             .andReturn()
             .getResponse()
             .getContentAsString();
-        var task = om.readValue(response, TaskDTO.class);
+        var task = getOm().readValue(response, TaskDTO.class);
         assertThat(task)
             .matches(t -> t.getName().get().equals(createdTask.getName()), "task.title")
             .matches(t -> t.getDescription().get().equals(createdTask.getDescription()), "task.description")
-            .matches(t -> t.getTaskStatusSlug().get().equals(testStatus.getName()), "task.status")
-            .matches(t -> t.getAssigneeId().get().equals(testUser.getId()), "task.assignee")
-            .matches(t -> t.getTaskLabelIds().get().equals(Set.of(testLabel.getId())), "task.labels");
+            .matches(t -> t.getTaskStatusSlug().get().equals(getTestStatus().getName()), "task.status")
+            .matches(t -> t.getAssigneeId().get().equals(getTestUser().getId()), "task.assignee")
+            .matches(t -> t.getTaskLabelIds().get().equals(Set.of(getTestLabel().getId())), "task.labels");
     }
 
     @SneakyThrows
     @Test
     public void testDelete() {
         var createdTask = createTask();
-        assertThat(taskRepository.count()).isOne();
-        mockMvc
+        assertThat(getTaskRepository().count()).isOne();
+        getMockMvc()
             .perform(delete(TaskController.PATH + "/" + createdTask.getId()).with(jwt()))
             .andExpect(status().isNoContent());
-        assertThat(taskRepository.count()).isZero();
+        assertThat(getTaskRepository().count()).isZero();
     }
 
 }

@@ -1,22 +1,11 @@
 package hexlet.code.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.controller.UsersController;
 import hexlet.code.dto.UserDTO;
-import hexlet.code.model.User;
-import hexlet.code.repository.UserRepository;
-import hexlet.code.utils.ModelGenerator;
 import lombok.SneakyThrows;
 import org.instancio.Instancio;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
@@ -34,14 +23,14 @@ public final class UserControllerTest extends BaseIT {
     @Test
     public void testCreate() {
         var userToCreate = new UserDTO(generateUser());
-        mockMvc.perform(
+        getMockMvc().perform(
             post(UsersController.PATH)
                 .with(jwt())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(om.writeValueAsString(userToCreate))
+                .content(getOm().writeValueAsString(userToCreate))
         ).andExpect(status().isCreated());
 
-        assertThat(userRepository.count()).isEqualTo(2);
+        assertThat(getUserRepository().count()).isEqualTo(2);
     }
 
     @Test
@@ -49,14 +38,14 @@ public final class UserControllerTest extends BaseIT {
     public void testUpdate() {
         var userForUpdate = new UserDTO(generateUser());
 
-        mockMvc.perform(
-            put(UsersController.PATH + "/" + testUser.getId())
+        getMockMvc().perform(
+            put(UsersController.PATH + "/" + getTestUser().getId())
                 .with(jwt())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(om.writeValueAsString(userForUpdate))
+                .content(getOm().writeValueAsString(userForUpdate))
         ).andExpect(status().isOk());
 
-        var updatedUser = userRepository.findById(testUser.getId()).orElseThrow();
+        var updatedUser = getUserRepository().findById(getTestUser().getId()).orElseThrow();
         assertThat(updatedUser)
             .matches(u -> u.getEmail().equals(userForUpdate.getEmail().get()), "user.email")
             .matches(u -> u.getFirstName().equals(userForUpdate.getFirstName().get()), "user.firstName")
@@ -66,8 +55,8 @@ public final class UserControllerTest extends BaseIT {
     @SneakyThrows
     @Test
     public void testGet() {
-        var response = mockMvc.perform(
-                get(UsersController.PATH + "/" + testUser.getId())
+        var response = getMockMvc().perform(
+                get(UsersController.PATH + "/" + getTestUser().getId())
                     .with(jwt())
             )
             .andExpect(status().isOk())
@@ -75,29 +64,29 @@ public final class UserControllerTest extends BaseIT {
             .getResponse()
             .getContentAsString();
 
-        var user = om.readValue(response, UserDTO.class);
+        var user = getOm().readValue(response, UserDTO.class);
         assertThat(user)
-            .matches(u -> u.getEmail().get().equals(testUser.getEmail()), "user.email")
-            .matches(u -> u.getFirstName().get().equals(testUser.getFirstName()), "user.firstName")
-            .matches(u -> u.getLastName().get().equals(testUser.getLastName()), "user.lastName");
+            .matches(u -> u.getEmail().get().equals(getTestUser().getEmail()), "user.email")
+            .matches(u -> u.getFirstName().get().equals(getTestUser().getFirstName()), "user.firstName")
+            .matches(u -> u.getLastName().get().equals(getTestUser().getLastName()), "user.lastName");
     }
 
     @Test
     @SneakyThrows
     public void testGetAll() {
-        var usersToCreate = Instancio.of(modelGenerator.getUserModel())
+        var usersToCreate = Instancio.of(getModelGenerator().getUserModel())
             .stream()
             .limit(10)
             .toList();
-        userRepository.saveAll(usersToCreate);
+        getUserRepository().saveAll(usersToCreate);
 
-        var response = mockMvc.perform(get(UsersController.PATH).with(jwt()))
+        var response = getMockMvc().perform(get(UsersController.PATH).with(jwt()))
             .andExpect(status().isOk())
             .andReturn()
             .getResponse()
             .getContentAsString();
 
-        var users = om.readValue(response, List.class);
+        var users = getOm().readValue(response, List.class);
         assertThat(users).hasSize(11);
     }
 
@@ -105,10 +94,10 @@ public final class UserControllerTest extends BaseIT {
     @Test
     @SneakyThrows
     public void testDelete() {
-        mockMvc.perform(delete(UsersController.PATH + "/" + testUser.getId()).with(jwt()))
+        getMockMvc().perform(delete(UsersController.PATH + "/" + getTestUser().getId()).with(jwt()))
             .andExpect(status().isNoContent());
 
-        assertThat(userRepository.count()).isZero();
+        assertThat(getUserRepository().count()).isZero();
     }
 
 }

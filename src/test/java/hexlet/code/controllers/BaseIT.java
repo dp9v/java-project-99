@@ -10,6 +10,7 @@ import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.repository.UserRepository;
 import hexlet.code.utils.ModelGenerator;
+import lombok.Getter;
 import org.instancio.Instancio;
 import org.instancio.Select;
 import org.junit.jupiter.api.AfterEach;
@@ -25,26 +26,27 @@ import java.util.Set;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
+@Getter
 public class BaseIT {
 
     @Autowired
-    protected MockMvc mockMvc;
+    private MockMvc mockMvc;
     @Autowired
-    protected TaskStatusRepository taskStatusRepository;
+    private TaskStatusRepository taskStatusRepository;
     @Autowired
-    protected LabelRepository labelRepository;
+    private LabelRepository labelRepository;
     @Autowired
-    protected UserRepository userRepository;
+    private UserRepository userRepository;
     @Autowired
-    protected TaskRepository taskRepository;
+    private TaskRepository taskRepository;
     @Autowired
-    protected ModelGenerator modelGenerator;
+    private ModelGenerator modelGenerator;
     @Autowired
-    protected ObjectMapper om;
+    private ObjectMapper om;
 
-    protected Label testLabel;
-    protected TaskStatus testStatus;
-    protected User testUser;
+    private Label testLabel;
+    private TaskStatus testStatus;
+    private User testUser;
 
     @BeforeEach
     public void setUp() {

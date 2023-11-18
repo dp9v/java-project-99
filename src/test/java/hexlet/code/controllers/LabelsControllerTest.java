@@ -1,21 +1,11 @@
 package hexlet.code.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.controller.LabelsController;
 import hexlet.code.dto.LabelDTO;
-import hexlet.code.model.Label;
-import hexlet.code.repository.LabelRepository;
-import hexlet.code.utils.ModelGenerator;
 import lombok.SneakyThrows;
 import org.instancio.Instancio;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
@@ -32,18 +22,18 @@ public final class LabelsControllerTest extends BaseIT {
     @SneakyThrows
     @Test
     public void testCreate() {
-        labelRepository.deleteAll();
+        getLabelRepository().deleteAll();
         var labelToCreate = new LabelDTO(
-            Instancio.of(modelGenerator.getLabelModel()).create()
+            Instancio.of(getModelGenerator().getLabelModel()).create()
         );
-        mockMvc.perform(
+        getMockMvc().perform(
             post(LabelsController.PATH)
                 .with(jwt())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(om.writeValueAsString(labelToCreate))
+                .content(getOm().writeValueAsString(labelToCreate))
         ).andExpect(status().isCreated());
 
-        var labels = labelRepository.findAll();
+        var labels = getLabelRepository().findAll();
         assertThat(labels).hasSize(1);
         assertThat(labels.get(0))
             .matches(s -> labelToCreate.getName().get().equals(s.getName()), "label.name");
@@ -55,17 +45,17 @@ public final class LabelsControllerTest extends BaseIT {
         var createdLabel = createLabel();
 
         var labelForUpdate = new LabelDTO(
-            Instancio.of(modelGenerator.getLabelModel()).create()
+            Instancio.of(getModelGenerator().getLabelModel()).create()
         );
 
-        mockMvc.perform(
+        getMockMvc().perform(
             put(LabelsController.PATH + "/" + createdLabel.getId())
                 .with(jwt())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(om.writeValueAsString(labelForUpdate))
+                .content(getOm().writeValueAsString(labelForUpdate))
         ).andExpect(status().isOk());
 
-        var updatedLabel = labelRepository.findById(createdLabel.getId()).orElseThrow();
+        var updatedLabel = getLabelRepository().findById(createdLabel.getId()).orElseThrow();
         assertThat(updatedLabel)
             .matches(s -> labelForUpdate.getName().get().equals(s.getName()), "label.name");
     }
@@ -75,7 +65,7 @@ public final class LabelsControllerTest extends BaseIT {
     public void testGet() {
         var createdLabel = createLabel();
 
-        var response = mockMvc.perform(
+        var response = getMockMvc().perform(
                 get(LabelsController.PATH + "/" + createdLabel.getId())
                     .with(jwt())
             )
@@ -84,7 +74,7 @@ public final class LabelsControllerTest extends BaseIT {
             .getResponse()
             .getContentAsString();
 
-        var label = om.readValue(response, LabelDTO.class);
+        var label = getOm().readValue(response, LabelDTO.class);
         assertThat(label)
             .matches(s -> s.getName().get().equals(createdLabel.getName()), "label.name");
     }
@@ -92,19 +82,19 @@ public final class LabelsControllerTest extends BaseIT {
     @Test
     @SneakyThrows
     public void testGetAll() {
-        var labelsToCreate = Instancio.of(modelGenerator.getLabelModel())
+        var labelsToCreate = Instancio.of(getModelGenerator().getLabelModel())
             .stream()
             .limit(3)
             .toList();
-        labelRepository.saveAll(labelsToCreate);
+        getLabelRepository().saveAll(labelsToCreate);
 
-        var response = mockMvc.perform(get(LabelsController.PATH).with(jwt()))
+        var response = getMockMvc().perform(get(LabelsController.PATH).with(jwt()))
             .andExpect(status().isOk())
             .andReturn()
             .getResponse()
             .getContentAsString();
 
-        var labels = om.readValue(response, List.class);
+        var labels = getOm().readValue(response, List.class);
         assertThat(labels).hasSize(4);
     }
 
@@ -112,10 +102,10 @@ public final class LabelsControllerTest extends BaseIT {
     @Test
     @SneakyThrows
     public void testDelete() {
-        mockMvc.perform(delete(LabelsController.PATH + "/" + testLabel.getId()).with(jwt()))
+        getMockMvc().perform(delete(LabelsController.PATH + "/" + getTestLabel().getId()).with(jwt()))
             .andExpect(status().isNoContent());
 
-        assertThat(labelRepository.count()).isZero();
+        assertThat(getLabelRepository().count()).isZero();
     }
 
 }

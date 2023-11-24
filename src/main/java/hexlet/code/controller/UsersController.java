@@ -1,6 +1,7 @@
 package hexlet.code.controller;
 
 import hexlet.code.dto.UserDTO;
+import hexlet.code.repository.UserRepository;
 import hexlet.code.service.UserService;
 import hexlet.code.utils.ResponseEntityBuilder;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
@@ -25,6 +27,11 @@ public final class UsersController {
     public static final String PATH = "/api/users";
 
     private final UserService userService;
+    private final UserRepository userRepository;
+
+    private static final String ONLY_OWNER_BY_ID = """
+                @userRepository.findById(#id).get().getEmail() == authentication.name
+            """;
 
     @GetMapping
     public ResponseEntity<List<UserDTO>> getAll() {
@@ -34,20 +41,7 @@ public final class UsersController {
     @GetMapping("/{id}")
     public UserDTO getById(@PathVariable Long id) {
         return new UserDTO(
-            userService.getById(id)
-        );
-    }
-
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteById(@PathVariable Long id) {
-        userService.deleteById(id);
-    }
-
-    @PutMapping("/{id}")
-    public UserDTO create(@PathVariable Long id, @RequestBody UserDTO user) {
-        return new UserDTO(
-            userService.update(id, user)
+                userService.getById(id)
         );
     }
 
@@ -55,7 +49,22 @@ public final class UsersController {
     @ResponseStatus(HttpStatus.CREATED)
     public UserDTO create(@RequestBody UserDTO user) {
         return new UserDTO(
-            userService.create(user)
+                userService.create(user)
         );
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize(ONLY_OWNER_BY_ID)
+    public UserDTO create(@PathVariable Long id, @RequestBody UserDTO user) {
+        return new UserDTO(
+                userService.update(id, user)
+        );
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize(ONLY_OWNER_BY_ID)
+    public void deleteById(@PathVariable Long id) {
+        userService.deleteById(id);
     }
 }

@@ -23,7 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(UsersController.PATH)
-public final class UsersController {
+public class UsersController {
     public static final String PATH = "/api/users";
 
     private final UserService userService;
@@ -55,7 +55,7 @@ public final class UsersController {
 
     @PutMapping("/{id}")
     @PreAuthorize(ONLY_OWNER_BY_ID)
-    public UserDTO create(@PathVariable Long id, @RequestBody UserDTO user) {
+    public UserDTO update(@PathVariable Long id, @RequestBody UserDTO user) {
         return new UserDTO(
                 userService.update(id, user)
         );

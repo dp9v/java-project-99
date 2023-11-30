@@ -3,6 +3,7 @@ package hexlet.code.controllers;
 import hexlet.code.controller.UsersController;
 import hexlet.code.dto.UserDTO;
 import lombok.SneakyThrows;
+import org.assertj.core.api.AssertionsForClassTypes;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -30,17 +31,24 @@ public final class UserControllerTest extends BaseIT {
                 .content(getOm().writeValueAsString(userToCreate))
         ).andExpect(status().isCreated());
 
-        assertThat(getUserRepository().count()).isEqualTo(2);
+        var createdUser = getUserRepository().findByEmail(userToCreate.getEmail().get()).orElseThrow();
+
+        AssertionsForClassTypes.assertThat(userToCreate)
+                .matches(u -> u.getEmail().get().equals(createdUser.getEmail()), "user.email")
+                .matches(u -> u.getFirstName().get().equals(createdUser.getFirstName()), "user.firstName")
+                .matches(u -> u.getLastName().get().equals(createdUser.getLastName()), "user.lastName");
     }
 
     @Test
     @SneakyThrows
     public void testUpdate() {
         var userForUpdate = new UserDTO(generateUser());
+        var token = jwt().jwt(builder -> builder.subject(getTestUser().getEmail()));
+
 
         getMockMvc().perform(
             put(UsersController.PATH + "/" + getTestUser().getId())
-                .with(jwt())
+                .with(token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(getOm().writeValueAsString(userForUpdate))
         ).andExpect(status().isOk());
@@ -94,7 +102,9 @@ public final class UserControllerTest extends BaseIT {
     @Test
     @SneakyThrows
     public void testDelete() {
-        getMockMvc().perform(delete(UsersController.PATH + "/" + getTestUser().getId()).with(jwt()))
+        var token = jwt().jwt(builder -> builder.subject(getTestUser().getEmail()));
+        getMockMvc().perform(delete(UsersController.PATH + "/" + getTestUser().getId())
+                        .with(token))
             .andExpect(status().isNoContent());
 
         assertThat(getUserRepository().count()).isZero();

@@ -19,7 +19,7 @@ import static jakarta.persistence.GenerationType.AUTO;
 @Entity
 @Table(name = "labels")
 @Accessors(chain = true)
-public class Label {
+public class Label implements BaseEntity {
 
     @Id
     @GeneratedValue(strategy = AUTO)

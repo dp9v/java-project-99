@@ -30,31 +30,24 @@ public final class LabelsController {
     @GetMapping
     public ResponseEntity<List<LabelDTO>> getAll() {
         return ResponseEntityBuilder.build(
-                labelsService.getAll(),
-                LabelDTO::new
+                labelsService.getAll()
         );
     }
 
     @GetMapping("/{id}")
     public LabelDTO getById(@PathVariable Long id) {
-        return new LabelDTO(
-            labelsService.getById(id)
-        );
+        return labelsService.getById(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public LabelDTO create(@RequestBody LabelDTO label) {
-        return new LabelDTO(
-            labelsService.create(label)
-        );
+        return labelsService.create(label);
     }
 
     @PutMapping("/{id}")
     public LabelDTO update(@PathVariable Long id, @RequestBody LabelDTO label) {
-        return new LabelDTO(
-            labelsService.update(id, label)
-        );
+        return labelsService.update(id, label);
     }
 
     @DeleteMapping("/{id}")

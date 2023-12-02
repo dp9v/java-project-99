@@ -14,4 +14,10 @@ public class ResponseEntityBuilder {
                 .header("X-Total-Count", String.valueOf(result.size()))
                 .body(result);
     }
+
+    public static <T> ResponseEntity<List<T>> build(List<T> items) {
+        return ResponseEntity.ok()
+            .header("X-Total-Count", String.valueOf(items.size()))
+            .body(items);
+    }
 }

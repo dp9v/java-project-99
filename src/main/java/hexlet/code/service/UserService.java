@@ -45,7 +45,7 @@ public final class UserService implements UserDetailsManager {
 
     public UserDTO update(Long id, UserDTO user) {
         var userToUpdate = userRepository.findById(id)
-            .map(u->userMapper.update(user, u))
+            .map(u -> userMapper.update(user, u))
             .orElseThrow();
 
         return userMapper.map(userRepository.save(userToUpdate));

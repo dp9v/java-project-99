@@ -35,7 +35,7 @@ public class TaskDTO {
             JsonNullable.of(task.getName()),
             JsonNullable.of(task.getDescription()),
             JsonNullable.of(task.getAssignee() == null ? null : task.getAssignee().getId()),
-            JsonNullable.of(task.getTaskStatus().getName()),
+            JsonNullable.of(task.getTaskStatus().getSlug()),
             JsonNullable.of(task.getLabels()
                 .stream()
                 .map(Label::getId)

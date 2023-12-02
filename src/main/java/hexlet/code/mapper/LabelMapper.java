@@ -1,6 +1,5 @@
 package hexlet.code.mapper;
 
-import org.mapstruct.InheritConfiguration;
 import hexlet.code.dto.LabelDTO;
 import hexlet.code.model.Label;
 import org.mapstruct.Mapper;
@@ -26,6 +25,9 @@ public abstract class LabelMapper {
 
     public abstract List<LabelDTO> map(List<Label> source);
 
-    @InheritConfiguration
+    @Mappings({
+        @Mapping(target = "id", ignore = true),
+        @Mapping(target = "createdAt", ignore = true)
+    })
     public abstract Label update(LabelDTO source, @MappingTarget Label target);
 }

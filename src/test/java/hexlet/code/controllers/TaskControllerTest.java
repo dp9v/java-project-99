@@ -93,7 +93,7 @@ public class TaskControllerTest extends BaseIT {
         assertThat(task)
             .matches(t -> t.getName().get().equals(createdTask.getName()), "task.title")
             .matches(t -> t.getDescription().get().equals(createdTask.getDescription()), "task.description")
-            .matches(t -> t.getTaskStatusSlug().get().equals(getTestStatus().getName()), "task.status")
+            .matches(t -> t.getTaskStatusSlug().get().equals(getTestStatus().getSlug()), "task.status")
             .matches(t -> t.getAssigneeId().get().equals(getTestUser().getId()), "task.assignee")
             .matches(t -> t.getTaskLabelIds().get().equals(Set.of(getTestLabel().getId())), "task.labels");
     }

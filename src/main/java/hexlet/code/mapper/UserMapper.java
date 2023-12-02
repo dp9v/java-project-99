@@ -34,6 +34,10 @@ public abstract class UserMapper {
 
     public abstract List<UserDTO> map(List<User> source);
 
+    @Mappings({
+        @Mapping(target = "id", ignore = true),
+        @Mapping(target = "createdAt", ignore = true)
+    })
     public abstract User update(UserDTO source, @MappingTarget User target);
 
     @BeforeMapping

@@ -1,7 +1,6 @@
 package hexlet.code.controller;
 
 import hexlet.code.dto.UserDTO;
-import hexlet.code.repository.UserRepository;
 import hexlet.code.service.UserService;
 import hexlet.code.utils.ResponseEntityBuilder;
 import lombok.RequiredArgsConstructor;

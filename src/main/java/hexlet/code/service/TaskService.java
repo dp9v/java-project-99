@@ -1,64 +1,53 @@
 package hexlet.code.service;
 
 import hexlet.code.dto.TaskDTO;
-import hexlet.code.model.Label;
+import hexlet.code.mapper.TaskMapper;
 import hexlet.code.model.Task;
-import hexlet.code.model.User;
 import hexlet.code.repository.TaskRepository;
-import hexlet.code.repository.TaskStatusRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Service
 @RequiredArgsConstructor
 public class TaskService {
     private final TaskRepository taskRepository;
-    private final TaskStatusRepository taskStatusRepository;
+    private final TaskMapper mapper;
 
-    public Task getById(Long id) {
-        return taskRepository.findById(id).orElseThrow();
+    public TaskDTO getById(Long id) {
+        return mapper.map(
+            taskRepository.findById(id).orElseThrow()
+        );
     }
 
-    public List<Task> getAll(Specification<Task> specification) {
-        return taskRepository.findAll(specification);
+    public List<TaskDTO> getAll(Specification<Task> specification) {
+        return mapper.map(
+            taskRepository.findAll(specification)
+        );
     }
 
     public void deleteById(Long id) {
         taskRepository.deleteById(id);
     }
 
-    public Task create(TaskDTO taskDTO) {
-        var taskToCreate = merge(new Task(), taskDTO);
-        return taskRepository.save(taskToCreate);
-    }
-
-    public Task update(Long id, TaskDTO task) {
-        var taskForUpdate = taskRepository.findById(id).orElseThrow();
-        return taskRepository.save(
-            merge(taskForUpdate, task)
+    public TaskDTO create(TaskDTO task) {
+        var taskToCreate = mapper.update(task, new Task())
+            .setCreatedAt(LocalDate.now());
+        return mapper.map(
+            taskRepository.save(taskToCreate)
         );
     }
 
-    public Task merge(Task target, TaskDTO source) {
-        source.getTaskStatusSlug().ifPresent(s -> target.setTaskStatus(
-            taskStatusRepository.findByName(s).orElseThrow()
-        ));
-        source.getTaskLabelIds().ifPresent(labels -> target.setLabels(
-            labels.stream()
-                .map(id -> new Label().setId(id))
-                .collect(Collectors.toSet())
-        ));
-        source.getName().ifPresent(target::setName);
-        source.getDescription().ifPresent(target::setDescription);
-        source.getIndex().ifPresent(target::setIndex);
-        source.getAssigneeId().ifPresent(id -> target.setAssignee(
-            new User().setId(id)
-        ));
-        return target;
+    public TaskDTO update(Long id, TaskDTO task) {
+        var taskToUpdate = taskRepository.findById(id)
+            .map(t -> mapper.update(task, t))
+            .orElseThrow();
+        return mapper.map(
+            taskRepository.save(taskToUpdate)
+        );
     }
 }

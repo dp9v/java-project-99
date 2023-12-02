@@ -32,16 +32,13 @@ public class TaskController {
     @GetMapping
     public ResponseEntity<List<TaskDTO>> getAll(TaskFilterRequest filter) {
         return ResponseEntityBuilder.build(
-                taskService.getAll(taskSpecificationBuilder.build(filter)),
-                TaskDTO::new
+                taskService.getAll(taskSpecificationBuilder.build(filter))
         );
     }
 
     @GetMapping("/{id}")
     public TaskDTO getById(@PathVariable Long id) {
-        return new TaskDTO(
-                taskService.getById(id)
-        );
+        return taskService.getById(id);
     }
 
     @DeleteMapping("/{id}")
@@ -53,16 +50,12 @@ public class TaskController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public TaskDTO create(@RequestBody TaskDTO taskStatus) {
-        return new TaskDTO(
-                taskService.create(taskStatus)
-        );
+        return taskService.create(taskStatus);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public TaskDTO update(@PathVariable Long id, @RequestBody TaskDTO task) {
-        return new TaskDTO(
-                taskService.update(id, task)
-        );
+        return taskService.update(id, task);
     }
 }

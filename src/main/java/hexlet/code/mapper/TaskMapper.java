@@ -37,8 +37,10 @@ public abstract class TaskMapper {
 
     @Mappings({
         @Mapping(source = "taskStatusSlug", target = "taskStatus"),
-        @Mapping(source = "assigneeId", target = "assignee.id"),
-        @Mapping(source = "taskLabelIds", target = "labels")
+        @Mapping(source = "assigneeId", target = "assignee"),
+        @Mapping(source = "taskLabelIds", target = "labels"),
+        @Mapping(target = "createdAt", ignore = true),
+        @Mapping(target = "id", ignore = true)
     })
     public abstract Task update(TaskDTO source, @MappingTarget Task target);
 

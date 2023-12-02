@@ -4,6 +4,7 @@ import hexlet.code.dto.TaskDTO;
 import hexlet.code.model.Label;
 import hexlet.code.model.Task;
 import hexlet.code.model.TaskStatus;
+import hexlet.code.model.User;
 import hexlet.code.repository.TaskStatusRepository;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -47,6 +48,10 @@ public abstract class TaskMapper {
     public TaskStatus toEntity(String slug) {
         return taskStatusRepository.findBySlug(slug)
             .orElseThrow();
+    }
+
+    public User toEntity(Long assigneeId) {
+        return new User().setId(assigneeId);
     }
 
     public Set<Label> toEntity(Set<Long> labelIds) {

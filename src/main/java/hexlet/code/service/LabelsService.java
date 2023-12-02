@@ -14,35 +14,34 @@ import java.util.List;
 @RequiredArgsConstructor
 public class LabelsService {
     private final LabelRepository labelRepository;
-    private final LabelMapper labelMapper;
+    private final LabelMapper mapper;
 
     public LabelDTO getById(Long id) {
-        return labelMapper.map(
+        return mapper.map(
             labelRepository.findById(id)
                 .orElseThrow()
         );
     }
 
     public List<LabelDTO> getAll() {
-        return labelMapper.map(
+        return mapper.map(
             labelRepository.findAll()
         );
     }
 
     public LabelDTO create(LabelDTO label) {
-        var updatedLabel = labelMapper.update(label, new Label())
+        var updatedLabel = mapper.update(label, new Label())
             .setCreatedAt(LocalDate.now());
-        return labelMapper.map(
+        return mapper.map(
             labelRepository.save(updatedLabel)
         );
     }
 
     public LabelDTO update(Long id, LabelDTO label) {
-        var updatedLabel = labelMapper.update(
-            label,
-            labelRepository.findById(id).orElseThrow()
-        );
-        return labelMapper.map(
+        var updatedLabel = labelRepository.findById(id)
+            .map(model -> mapper.update(label, model))
+            .orElseThrow();
+        return mapper.map(
             labelRepository.save(updatedLabel)
         );
     }

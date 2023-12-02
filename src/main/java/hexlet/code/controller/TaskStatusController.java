@@ -28,14 +28,12 @@ public final class TaskStatusController {
 
     @GetMapping
     public ResponseEntity<List<TaskStatusDTO>> getAll() {
-        return ResponseEntityBuilder.build(service.getAll(), TaskStatusDTO::new);
+        return ResponseEntityBuilder.build(service.getAll());
     }
 
     @GetMapping("/{id}")
     public TaskStatusDTO getById(@PathVariable Long id) {
-        return new TaskStatusDTO(
-                service.getById(id)
-        );
+        return service.getById(id);
     }
 
     @DeleteMapping("/{id}")
@@ -47,15 +45,11 @@ public final class TaskStatusController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public TaskStatusDTO create(@RequestBody TaskStatusDTO taskStatus) {
-        return new TaskStatusDTO(
-                service.create(taskStatus)
-        );
+        return service.create(taskStatus);
     }
 
     @PutMapping("/{id}")
     public TaskStatusDTO update(@PathVariable Long id, @RequestBody TaskStatusDTO taskStatus) {
-        return new TaskStatusDTO(
-                service.update(id, taskStatus)
-        );
+        return service.update(id, taskStatus);
     }
 }

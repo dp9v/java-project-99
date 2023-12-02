@@ -1,6 +1,7 @@
 package hexlet.code.service;
 
 import hexlet.code.dto.TaskStatusDTO;
+import hexlet.code.mapper.TaskStatusMapper;
 import hexlet.code.model.TaskStatus;
 import hexlet.code.repository.TaskStatusRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,36 +14,38 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TaskStatusService {
     private final TaskStatusRepository repository;
+    private final TaskStatusMapper mapper;
 
-    public List<TaskStatus> getAll() {
-        return repository.findAll();
+    public List<TaskStatusDTO> getAll() {
+        return mapper.map(
+            repository.findAll()
+        );
     }
 
-    public TaskStatus getById(Long id) {
-        return repository.findById(id)
-                .orElseThrow();
+    public TaskStatusDTO getById(Long id) {
+        return mapper.map(
+            repository.findById(id).orElseThrow()
+        );
     }
 
     public void deleteById(Long id) {
         repository.deleteById(id);
     }
 
-    public TaskStatus create(TaskStatusDTO statusTO) {
-        var statusToCreate = merge(new TaskStatus(), statusTO)
+    public TaskStatusDTO create(TaskStatusDTO status) {
+        var statusToCreate = mapper.update(status, new TaskStatus())
                 .setCreatedAt(LocalDate.now());
-        return repository.save(statusToCreate);
+        return mapper.map(
+            repository.save(statusToCreate)
+        );
     }
 
-    public TaskStatus update(Long id, TaskStatusDTO statusTO) {
-        var statusToCreate = repository.findById(id)
-                .map(s -> merge(s, statusTO))
+    public TaskStatusDTO update(Long id, TaskStatusDTO statusTO) {
+        var statusToUpdate = repository.findById(id)
+                .map(s -> mapper.update(statusTO, s))
                 .orElseThrow();
-        return repository.save(statusToCreate);
-    }
-
-    private TaskStatus merge(TaskStatus target, TaskStatusDTO source) {
-        source.getName().ifPresent(target::setName);
-        source.getSlug().ifPresent(target::setSlug);
-        return target;
+        return mapper.map(
+            repository.save(statusToUpdate)
+        );
     }
 }

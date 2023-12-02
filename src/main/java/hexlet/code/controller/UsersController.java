@@ -27,7 +27,6 @@ public class UsersController {
     public static final String PATH = "/api/users";
 
     private final UserService userService;
-    private final UserRepository userRepository;
 
     private static final String ONLY_OWNER_BY_ID = """
                 @userRepository.findById(#id).get().getEmail() == authentication.name
@@ -35,30 +34,24 @@ public class UsersController {
 
     @GetMapping
     public ResponseEntity<List<UserDTO>> getAll() {
-        return ResponseEntityBuilder.build(userService.getAll(), UserDTO::new);
+        return ResponseEntityBuilder.build(userService.getAll());
     }
 
     @GetMapping("/{id}")
     public UserDTO getById(@PathVariable Long id) {
-        return new UserDTO(
-                userService.getById(id)
-        );
+        return userService.getById(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UserDTO create(@RequestBody UserDTO user) {
-        return new UserDTO(
-                userService.create(user)
-        );
+        return userService.create(user);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize(ONLY_OWNER_BY_ID)
     public UserDTO update(@PathVariable Long id, @RequestBody UserDTO user) {
-        return new UserDTO(
-                userService.update(id, user)
-        );
+        return userService.update(id, user);
     }
 
     @DeleteMapping("/{id}")

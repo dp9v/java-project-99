@@ -1,6 +1,7 @@
 package hexlet.code.service;
 
 import hexlet.code.dto.UserDTO;
+import hexlet.code.mapper.UserMapper;
 import hexlet.code.model.User;
 import hexlet.code.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,40 +20,35 @@ import java.util.List;
 public final class UserService implements UserDetailsManager {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
 
-    public List<User> getAll() {
-        return userRepository.findAll();
+    public List<UserDTO> getAll() {
+        return userMapper.map(userRepository.findAll());
     }
 
-    public User getById(Long id) {
-        return userRepository.findById(id).orElseThrow();
+    public UserDTO getById(Long id) {
+        return userMapper.map(
+            userRepository.findById(id).orElseThrow()
+        );
     }
 
     public void deleteById(Long id) {
         userRepository.deleteById(id);
     }
 
-    public User create(UserDTO user) {
-        var userToCreate = merge(new User(), user)
+    public UserDTO create(UserDTO user) {
+        var userToCreate = userMapper.update(user, new User())
             .setCreatedAt(LocalDate.now());
 
-        return userRepository.save(userToCreate);
+        return userMapper.map(userRepository.save(userToCreate));
     }
 
-    public User update(Long id, UserDTO user) {
-        var userToUpdate = merge(userRepository.findById(id).orElseThrow(), user);
+    public UserDTO update(Long id, UserDTO user) {
+        var userToUpdate = userRepository.findById(id)
+            .map(u->userMapper.update(user, u))
+            .orElseThrow();
 
-        return userRepository.save(userToUpdate);
-    }
-
-    private User merge(User user, UserDTO userDTO) {
-        userDTO.getEmail().ifPresent(user::setEmail);
-        userDTO.getLastName().ifPresent(user::setLastName);
-        userDTO.getFirstName().ifPresent(user::setFirstName);
-        userDTO.getPassword().ifPresent(p -> user.setPassword(
-            passwordEncoder.encode(p)
-        ));
-        return user.setUpdatedAt(LocalDate.now());
+        return userMapper.map(userRepository.save(userToUpdate));
     }
 
     @Override
